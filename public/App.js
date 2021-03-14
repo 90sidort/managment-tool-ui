@@ -31,39 +31,39 @@ var initialJobs = [{
   personel: 10,
   location: {
     id: 1,
-    city: "Gorzów Wielkopolski",
-    address: "Powstancow Slaskich 20",
-    country: "Poland",
-    postcode: "66-400"
+    city: 'Gorzów Wielkopolski',
+    address: 'Powstancow Slaskich 20',
+    country: 'Poland',
+    postcode: '66-400'
   },
-  title: "10 zbieraczy jabłek",
+  title: '10 zbieraczy jabłek',
   company: {
     id: 1,
-    name: "Jabłex"
+    name: 'Jabłex'
   },
-  start: "2021-03-01",
-  end: "2021-03-31",
-  status: "New"
+  start: '2021-03-01',
+  end: '2021-03-31',
+  status: 'New'
 }, {
   id: 2,
   personel: 1,
   location: {
     id: 1,
-    city: "Gorzów Wielkopolski",
-    address: "Powstancow Slaskich 20",
-    country: "Poland",
-    postcode: "66-400"
+    city: 'Gorzów Wielkopolski',
+    address: 'Powstancow Slaskich 20',
+    country: 'Poland',
+    postcode: '66-400'
   },
-  title: "1 kierownik zbierania jabłek",
+  title: '1 kierownik zbierania jabłek',
   company: {
     id: 1,
-    name: "Jabłex"
+    name: 'Jabłex'
   },
-  start: "2021-03-01",
-  end: "2021-03-31",
-  status: "New"
+  start: '2021-03-01',
+  end: '2021-03-31',
+  status: 'New'
 }];
-var dateRegex = new RegExp("^\\d\\d\\d\\d-\\d\\d-\\d\\d");
+var dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 
 function jsonDateReviver(key, value) {
   if (dateRegex.test(value)) return new Date(value);
@@ -230,7 +230,7 @@ var JobAdd = /*#__PURE__*/function (_React$Component2) {
         options.push( /*#__PURE__*/React.createElement("option", {
           key: i,
           value: locs[i]._id
-        }, locs[i].city, ", ", locs[i].country, ", ", locs[i].address, ",", " ", locs[i].postcode));
+        }, locs[i].city, ", ", locs[i].country, ", ", locs[i].address, ", ", locs[i].postcode));
       }
 
       return options;
@@ -269,7 +269,7 @@ var JobAdd = /*#__PURE__*/function (_React$Component2) {
     value: function onSubmitHandler(e) {
       e.preventDefault();
       var form = document.forms.jobAdd;
-      var company = document.getElementById("company");
+      var company = document.getElementById('company');
       var job = {
         title: form.title.value,
         personel: parseInt(form.personel.value),
@@ -282,7 +282,7 @@ var JobAdd = /*#__PURE__*/function (_React$Component2) {
         start: new Date(form.start.value),
         end: new Date(form.end.value),
         created: new Date(),
-        status: "New"
+        status: 'New'
       };
       this.props.createJob(job); // form.assignee.value = "";
       // form.title.value = "";
@@ -358,9 +358,9 @@ function _graphQLFetch() {
             _context8.prev = 1;
             _context8.next = 4;
             return fetch(window.ENV.UI_API_ENDPOINT, {
-              method: "POST",
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
               },
               body: JSON.stringify({
                 query: query,
@@ -380,8 +380,8 @@ function _graphQLFetch() {
             if (result.errors) {
               error = result.errors[0];
 
-              if (error.extensions.code == "BAD_USER_INPUT") {
-                details = error.extensions.exception.errors.join("\n ");
+              if (error.extensions.code == 'BAD_USER_INPUT') {
+                details = error.extensions.exception.errors.join('\n ');
                 alert("".concat(error.message, ":\n ").concat(details));
               } else {
                 alert("".concat(error.extensions.code, ": ").concat(error.message));
@@ -429,7 +429,7 @@ var SkillAdd = /*#__PURE__*/function (_React$Component3) {
         name: form.name.value
       };
       this.props.createSkill(skill);
-      form.name.value = "";
+      form.name.value = '';
     }
   }, {
     key: "render",
@@ -483,9 +483,9 @@ var SkillList = /*#__PURE__*/function (_React$Component4) {
                 query = "query {\n      skill {\n        _id\n        name\n      }\n    }";
                 _context3.next = 3;
                 return fetch(window.ENV.UI_API_ENDPOINT, {
-                  method: "POST",
+                  method: 'POST',
                   headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
                     query: query
@@ -529,9 +529,9 @@ var SkillList = /*#__PURE__*/function (_React$Component4) {
                 query = "mutation addNewSkill($skill: SkillInput!) { skillAdd(skill: $skill) {name _id}} ";
                 _context4.next = 3;
                 return fetch(window.ENV.UI_API_ENDPOINT, {
-                  method: "POST",
+                  method: 'POST',
                   headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
                     query: query,
@@ -729,4 +729,4 @@ var JobList = /*#__PURE__*/function (_React$Component5) {
 }(React.Component);
 
 var element = /*#__PURE__*/React.createElement(JobList, null);
-ReactDOM.render(element, document.getElementById("contents"));
+ReactDOM.render(element, document.getElementById('contents'));

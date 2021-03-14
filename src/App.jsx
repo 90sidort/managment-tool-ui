@@ -4,36 +4,36 @@ const initialJobs = [
     personel: 10,
     location: {
       id: 1,
-      city: "Gorzów Wielkopolski",
-      address: "Powstancow Slaskich 20",
-      country: "Poland",
-      postcode: "66-400",
+      city: 'Gorzów Wielkopolski',
+      address: 'Powstancow Slaskich 20',
+      country: 'Poland',
+      postcode: '66-400',
     },
-    title: "10 zbieraczy jabłek",
-    company: { id: 1, name: "Jabłex" },
-    start: "2021-03-01",
-    end: "2021-03-31",
-    status: "New",
+    title: '10 zbieraczy jabłek',
+    company: { id: 1, name: 'Jabłex' },
+    start: '2021-03-01',
+    end: '2021-03-31',
+    status: 'New',
   },
   {
     id: 2,
     personel: 1,
     location: {
       id: 1,
-      city: "Gorzów Wielkopolski",
-      address: "Powstancow Slaskich 20",
-      country: "Poland",
-      postcode: "66-400",
+      city: 'Gorzów Wielkopolski',
+      address: 'Powstancow Slaskich 20',
+      country: 'Poland',
+      postcode: '66-400',
     },
-    title: "1 kierownik zbierania jabłek",
-    company: { id: 1, name: "Jabłex" },
-    start: "2021-03-01",
-    end: "2021-03-31",
-    status: "New",
+    title: '1 kierownik zbierania jabłek',
+    company: { id: 1, name: 'Jabłex' },
+    start: '2021-03-01',
+    end: '2021-03-31',
+    status: 'New',
   },
 ];
 
-const dateRegex = new RegExp("^\\d\\d\\d\\d-\\d\\d-\\d\\d");
+const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 
 function jsonDateReviver(key, value) {
   if (dateRegex.test(value)) return new Date(value);
@@ -149,8 +149,7 @@ class JobAdd extends React.Component {
     for (let i = 0; i < locs.length; i++) {
       options.push(
         <option key={i} value={locs[i]._id}>
-          {locs[i].city}, {locs[i].country}, {locs[i].address},{" "}
-          {locs[i].postcode}
+          {locs[i].city}, {locs[i].country}, {locs[i].address}, {locs[i].postcode}
         </option>
       );
     }
@@ -184,7 +183,7 @@ class JobAdd extends React.Component {
   onSubmitHandler(e) {
     e.preventDefault();
     const form = document.forms.jobAdd;
-    const company = document.getElementById("company");
+    const company = document.getElementById('company');
     const job = {
       title: form.title.value,
       personel: parseInt(form.personel.value),
@@ -197,7 +196,7 @@ class JobAdd extends React.Component {
       start: new Date(form.start.value),
       end: new Date(form.end.value),
       created: new Date(),
-      status: "New",
+      status: 'New',
     };
     this.props.createJob(job);
     // form.assignee.value = "";
@@ -221,23 +220,9 @@ class JobAdd extends React.Component {
         {this.state.companyValue !== -1 && (
           <form name="jobAdd" onSubmit={this.onSubmitHandler}>
             <input type="text" name="title" placeholder="Title"></input>
-            <input
-              type="number"
-              name="personel"
-              placeholder="Personel"
-              step="1"
-            ></input>
-            <input
-              type="number"
-              name="rate"
-              placeholder="Rate"
-              step="0.01"
-            ></input>
-            <input
-              type="text"
-              name="description"
-              placeholder="Description"
-            ></input>
+            <input type="number" name="personel" placeholder="Personel" step="1"></input>
+            <input type="number" name="rate" placeholder="Rate" step="0.01"></input>
+            <input type="text" name="description" placeholder="Description"></input>
             <input type="text" name="currency" placeholder="Currency"></input>
             <select name="representative">{this.createRepItems()}</select>
             <select name="location">{this.createLocItems()}</select>
@@ -254,8 +239,8 @@ class JobAdd extends React.Component {
 async function graphQLFetch(query, variables = {}) {
   try {
     const response = await fetch(window.ENV.UI_API_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, variables }),
     });
     const body = await response.text();
@@ -263,8 +248,8 @@ async function graphQLFetch(query, variables = {}) {
 
     if (result.errors) {
       const error = result.errors[0];
-      if (error.extensions.code == "BAD_USER_INPUT") {
-        const details = error.extensions.exception.errors.join("\n ");
+      if (error.extensions.code == 'BAD_USER_INPUT') {
+        const details = error.extensions.exception.errors.join('\n ');
         alert(`${error.message}:\n ${details}`);
       } else {
         alert(`${error.extensions.code}: ${error.message}`);
@@ -288,7 +273,7 @@ class SkillAdd extends React.Component {
       name: form.name.value,
     };
     this.props.createSkill(skill);
-    form.name.value = "";
+    form.name.value = '';
   }
   render() {
     return (
@@ -321,8 +306,8 @@ class SkillList extends React.Component {
       }
     }`;
     const response = await fetch(window.ENV.UI_API_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query }),
     });
     const result = await response.json();
@@ -333,8 +318,8 @@ class SkillList extends React.Component {
     const query = `mutation addNewSkill($skill: SkillInput!) { skillAdd(skill: $skill) {name _id}} `;
 
     const response = await fetch(window.ENV.UI_API_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, variables: { skill } }),
     });
     const result = await response.json();
@@ -434,4 +419,4 @@ class JobList extends React.Component {
 
 const element = <JobList />;
 
-ReactDOM.render(element, document.getElementById("contents"));
+ReactDOM.render(element, document.getElementById('contents'));

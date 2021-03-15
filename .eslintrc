@@ -1,11 +1,17 @@
 {
-  "extends": ["airbnb", "prettier"],
+  "extends": ["airbnb", "prettier", "plugin:node/recommended"],
   "plugins": ["prettier"],
-  "env": {
-    "node": true
-  },
   "rules": {
+    "sourceType": "module",
+    "prettier/prettier": "error",
+    "no-unused-vars": "warn",
     "no-console": "off",
-    "prettier/prettier": ["error"]
+    "func-names": "off",
+    "no-process-exit": "off",
+    "object-shorthand": "off",
+    "class-methods-use-this": "off",
+    "no-underscore-dangle": ["error", {"allow": ["_doc", "_id"]}],
+    "import/extensions": [ "error", "always", { "ignorePackages": true } ],
+    "react/prop-types": "off"
   }
 }

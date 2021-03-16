@@ -1,4 +1,6 @@
-import JobRow from "./job.row"
+import React from 'react';
+
+import JobRow from "./job.row.jsx"
 
 export default function JobTable(props) {
     const jobRows = props.jobs.map((job) => <JobRow job={job} key={job._id} />);

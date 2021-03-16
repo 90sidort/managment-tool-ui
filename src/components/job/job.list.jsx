@@ -1,8 +1,10 @@
-import graphQLFetch from './utils/graphqlFetch'
-import JobsFilter from "./job.filter"
-import JobTable from "./job.table"
-import JobAdd from "./job.add"
-import SkillList from "./skill.list"
+import React from 'react';
+
+import graphQLFetch from '../../utils/graphqlFetch'
+import JobsFilter from "./job.filter.jsx"
+import JobTable from "./job.table.jsx"
+import JobAdd from "./job.add.jsx"
+import SkillList from "../skill/skill.list.jsx"
 
 export default class JobList extends React.Component {
     constructor() {

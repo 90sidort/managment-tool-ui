@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default class SkillAdd extends React.Component {
     constructor() {
       super();

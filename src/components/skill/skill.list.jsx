@@ -1,4 +1,6 @@
-import SkillAdd from "./skill.add"
+import React from 'react';
+
+import SkillAdd from "./skill.add.jsx"
 
 export default class SkillList extends React.Component {
     constructor() {

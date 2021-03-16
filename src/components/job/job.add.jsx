@@ -1,4 +1,6 @@
-import graphQLFetch from './utils/graphqlFetch'
+import React from 'react';
+
+import graphQLFetch from '../../utils/graphqlFetch'
 
 export default class JobAdd extends React.Component {
     constructor() {
@@ -114,8 +116,15 @@ export default class JobAdd extends React.Component {
         status: 'New',
       };
       this.props.createJob(job);
-      // form.assignee.value = "";
-      // form.title.value = "";
+      form.title.value = ""
+      form.personel.value = ""
+      form.rate.value = ""
+      form.description.value = ""
+      form.representative.value = ""
+      form.location.value = ""
+      form.start.value = ""
+      form.end.value = ""
+      this.setState({companyValue : -1})
     }
   
     render() {

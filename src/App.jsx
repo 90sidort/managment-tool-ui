@@ -1,11 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HashRouter as Router } from 'react-router-dom';
 import 'babel-polyfill';
 import 'whatwg-fetch';
 
-import JobList from './components/job/job.list.jsx'
+import Page from './components/page.jsx';
 
-const element = <JobList />;
+const element = (
+  <Router>
+    <Page />
+  </Router>
+)
 
 ReactDOM.render(element, document.getElementById('contents'));
 

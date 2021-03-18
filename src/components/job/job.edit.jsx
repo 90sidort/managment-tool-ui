@@ -6,20 +6,84 @@ export default class JobDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      details: {},
         id : this.props.match.params.id,
         companyValue: null,
-        companies: {}
+        companies: {},
+        representatives: {},
+        locations: {},
+        repValue: null,
+        locValue: null,
+        title: "",
+        personel: 0,
     };
+    this.onCompanySelectedHandler = this.onCompanySelectedHandler.bind(this);
+    this.onLocationSelectHandler = this.onLocationSelectHandler.bind(this);
+    this.onRepSelectHandler = this.onRepSelectHandler.bind(this);
+    this.onInputChange = this.onInputChange.bind(this)
   } 
 
   componentDidMount() {
-    this.loadDetails(this.state.id);
+    this.loadDetails(this.state.id).then(() => {
+      this.loadRep(this.state.companyValue)
+      this.loadLoc(this.state.companyValue)
+    })
     this.loadCompany()
   }
 
+  async loadRep(cid) {
+    console.log('cid', cid);
+    const query = `query getRep($cid: ID) {
+      representative(cid: $cid) {
+        _id
+        cid
+        email
+        phone
+        name
+      }
+    }`;
+    const data = await graphQLFetch(query, { cid });
+    if (data) {
+      this.setState({ representatives: data.representative });
+    }
+  }
+
+  async loadLoc(cid) {
+    const query = `query getLocations($cid: ID) {
+      location(cid: $cid) {
+        _id
+        cid
+        city
+        country
+        address
+        postcode
+      }
+    }`;
+    const data = await graphQLFetch(query, { cid });
+    if (data) {
+      this.setState({ locations: data.location });
+    }
+  }
+
   onCompanySelectedHandler(e) {
-    this.setState({ companyValue: parseInt(e.target.value) });
+    this.loadRep(e.target.value);
+    this.loadLoc(e.target.value);
+    this.setState({ companyValue: e.target.value });
+  }
+
+  onLocationSelectHandler(e) {
+    this.setState({ locValue: e.target.value });
+  }
+
+  onRepSelectHandler(e) {
+    this.setState({ repValue: e.target.value });
+  }
+
+  onInputChange(e) {
+    const value = e.target.value
+    this.setState({
+      ...this.state,
+      [e.target.name]: value
+    });
   }
 
   createCompItems() {
@@ -49,7 +113,7 @@ export default class JobDetails extends React.Component {
     }`;
     const data = await graphQLFetch(query);
     if (data) {
-      this.setState({ companies: data.company });
+      this.setState({ companies: data.company })
     }
   }
 
@@ -66,7 +130,7 @@ export default class JobDetails extends React.Component {
         representative { name _id cid email phone}
         location { country address postcode city cid _id}
         title
-        company {name}
+        company {_id name}
         status
         start
         end
@@ -75,28 +139,86 @@ export default class JobDetails extends React.Component {
 
     const data = await graphQLFetch(query, { id });
     if (data) {
-      this.setState({ details: data.job });
-      this.setState({companyValue: data.job._id})
+      console.log(data.job[0]);
+      const setData = data.job[0]
+      console.log(3210, setData);
+      this.setState({companyValue: setData.company._id})
+      this.setState({repValue: setData.representative._id})
+      this.setState({locValue: setData.location._id})
+      this.setState({title: setData.title})
+      this.setState({personel: setData.personel})
     }
   }
 
+  createRepItems() {
+    const options = [];
+    const reps = this.state.representatives;
+    for (let i = 0; i < reps.length; i++) {
+      options.push(
+        <option key={i} value={reps[i]._id}>
+          {reps[i].name}, {reps[i].email}
+        </option>
+      );
+    }
+    return options;
+  }
+
+  createLocItems() {
+    const options = [];
+    const locs = this.state.locations;
+    for (let i = 0; i < locs.length; i++) {
+      options.push(
+        <option key={i} value={locs[i]._id}>
+          {locs[i].city}, {locs[i].country}, {locs[i].address}, {locs[i].postcode}
+        </option>
+      );
+    }
+    return options;
+  }
+
   render() {
-    const details = this.state.details[0]
     const companies = this.state.companies
-    console.log(123, companies);
-    console.log(321, details);
+    const compValue = this.state.companyValue
+    const locValue = this.state.locValue
+    const repValue = this.state.repValue
+    const loc = this.state.locations
+    const rep = this.state.representatives
+    const title = this.state.title
+    const personel = this.state.personel
+    console.log(title);
+    console.log('p', personel);
     return(<div>
       <a href={`/#/details/${this.state.id}`}>Go back</a>
-      {companies && <select
+      <h3>Select company:</h3>
+      {companies && compValue && <select
               name="company"
               id="company"
-              defaultValue={this.state.companyValue}
+              value={compValue}
               onChange={this.onCompanySelectedHandler}
             >
               {this.createCompItems()}
         </select>}
-
-      <p>{details && details._id}</p>
+        <h3>Select representative:</h3>
+        {rep && repValue && <select name="representative" value={repValue} onChange={this.onRepSelectHandler}>{this.createRepItems()}</select>}
+        <h3>Select location:</h3>
+        {loc && locValue && <select name="location" value={locValue} onChange={this.onLocationSelectHandler}>{this.createLocItems()}</select>}
+        <h3>Provide offer title</h3>
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              value={this.state.title}
+              onChange={this.onInputChange}
+            />
+        <h3>Provide offer personel</h3>
+            <input
+              type="number"
+              name="personel"
+              placeholder="Personel"
+              step="1"
+              value={this.state.personel}
+              onChange={this.onInputChange}
+            />
     </div>)
   }
 }

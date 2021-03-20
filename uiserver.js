@@ -1,5 +1,6 @@
 const express = require('express');
 const proxy = require('http-proxy-middleware');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -36,6 +37,10 @@ if (apiProxyTarget) {
 
 app.get('/env.js', function (req, res) {
   res.send(`window.ENV = ${JSON.stringify(env)}`);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve('public/index.html'));
 });
 
 app.listen(port, function () {

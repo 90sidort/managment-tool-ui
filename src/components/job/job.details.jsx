@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import graphQLFetch from '../../utils/graphqlFetch';
 
@@ -46,7 +47,7 @@ export default class JobDetails extends React.Component {
     console.log(details);
     return (
       <div>
-        <a href={`/#/edit/${this.state.id}`}>Edit</a>
+        <Link to={`/edit/${this.state.id}`}>Edit</Link>
         <h3>Job details</h3>
         {details && (
           <div>

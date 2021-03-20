@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavLink, Link } from 'react-router-dom'
 import graphQLFetch from '../../utils/graphqlFetch'
 
 export default class JobPanel extends React.Component {
@@ -41,10 +42,11 @@ export default class JobPanel extends React.Component {
       }
 
     render(){
-        console.log(this.state);
         const desc = this.state.job.description
         return (
             <div>
+                <NavLink to="/">X</NavLink>
+                <Link to={`/details/${this.state.job._id}`}>Open details</Link>
                 <p>Placeholder {desc}</p>
             </div>
         )

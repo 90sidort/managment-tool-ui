@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import graphQLFetch from '../../utils/graphqlFetch';
 
@@ -117,8 +118,8 @@ export default class JobDetails extends React.Component {
     }
   }
 
-  async loadDetails(id) {
-    console.log(id);
+  async loadDetails(_id) {
+    console.log('to id',_id);
     const query = `query getJob($_id: ID) {
       job(_id: $_id) {
         _id
@@ -138,7 +139,7 @@ export default class JobDetails extends React.Component {
       }
     }`;
 
-    const data = await graphQLFetch(query, { id });
+    const data = await graphQLFetch(query, { _id });
     if (data) {
       console.log(data.job[0]);
       const setData = data.job[0]
@@ -189,7 +190,7 @@ export default class JobDetails extends React.Component {
     console.log('a',this.props.match.params);
     console.log('p', personel);
     return(<div>
-      <a href={`/#/details/${this.state.id}`}>Go back</a>
+      <Link to={`/details/${this.state.id}`}>Go back</Link>
       <h3>Select company:</h3>
       {companies && compValue && <select
               name="company"

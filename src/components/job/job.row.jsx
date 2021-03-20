@@ -1,10 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function JobRow(props) {
     const job = props.job;
     return (
       <tr>
-        <td><a href={`/#/details/${job._id}`}>{job.title}</a></td>
+        <td><Link to={`/details/${job._id}`}>{job.title}</Link></td>
         <td>{job.personel}</td>
         <td>{job.location.city}</td>
         <td>{job.location.address}</td>

@@ -4,8 +4,10 @@ import JobRow from "./job.row.jsx"
 
 export default function JobTable(props) {
     const jobRows = props.jobs.map((job) => <JobRow job={job} key={job._id} />);
+    console.log(props.jobs);
     return (
-      <table className="bordered-table">
+      props.jobs.length > 0 ?
+(      <table className="bordered-table">
         <thead>
           <tr>
             <th>Title</th>
@@ -20,6 +22,6 @@ export default function JobTable(props) {
           </tr>
         </thead>
         <tbody>{jobRows}</tbody>
-      </table>
+      </table>) : (<p>No jobs matching criteria found.</p>)
     );
   }

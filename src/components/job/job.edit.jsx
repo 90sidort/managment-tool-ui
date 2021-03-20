@@ -118,8 +118,9 @@ export default class JobDetails extends React.Component {
   }
 
   async loadDetails(id) {
-    const query = `query getJob($id: ID) {
-      job(id: $id) {
+    console.log(id);
+    const query = `query getJob($_id: ID) {
+      job(_id: $_id) {
         _id
         personel
         rate
@@ -185,7 +186,7 @@ export default class JobDetails extends React.Component {
     const rep = this.state.representatives
     const title = this.state.title
     const personel = this.state.personel
-    console.log(title);
+    console.log('a',this.props.match.params);
     console.log('p', personel);
     return(<div>
       <a href={`/#/details/${this.state.id}`}>Go back</a>

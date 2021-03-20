@@ -1,10 +1,12 @@
 import React from 'react';
+import { Route } from 'react-router';
 
 import graphQLFetch from '../../utils/graphqlFetch'
 import JobsFilter from "./job.filter.jsx"
 import JobTable from "./job.table.jsx"
 import JobAdd from "./job.add.jsx"
 import SkillList from "../skill/skill.list.jsx"
+import JobPanel from './job.panel.jsx';
 
 export default class JobList extends React.Component {
     constructor() {
@@ -20,11 +22,25 @@ export default class JobList extends React.Component {
       this.loadData();
       this.loadCompany();
     }
+
+    componentDidUpdate(prevProps) {
+      const { location: { search: prevSearch } } = prevProps;
+      const { location: { search } } = this.props;
+      if (prevSearch !== search) {
+        this.loadData();
+      }
+    }
   
     async loadData() {
+      const { location: { search } } = this.props;
+      const params = new URLSearchParams(search);
+      const vars = {};
+      if (params.get('status')) {
+        vars.status = params.get('status');
+      }
       const query = `
-      query {
-        job {
+      query getJob($_id: ID, $currency: String, $status: String) {
+        job(_id: $_id, currency: $currency, status: $status) {
           _id
           personel
           representative { name _id cid email phone}
@@ -37,7 +53,7 @@ export default class JobList extends React.Component {
         }
       }
       `;
-      const data = await graphQLFetch(query);
+      const data = await graphQLFetch(query, vars);
       if (data) {
         this.setState({ jobs: data.job });
       }
@@ -74,6 +90,8 @@ export default class JobList extends React.Component {
           <JobTable jobs={this.state.jobs} />
           <hr />
           <JobAdd createJob={this.createJob} comp={this.state.companies} />
+          <hr />
+          <Route path="/jobs/:id" component={JobPanel}></Route>
           <hr />
           <SkillList />
         </React.Fragment>

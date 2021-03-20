@@ -15,9 +15,9 @@ export default class JobDetails extends React.Component {
     this.loadDetails(this.state.id);
   }
 
-  async loadDetails(id) {
-    const query = `query getJob($id: ID) {
-      job(id: $id) {
+  async loadDetails(_id) {
+    const query = `query getJob($_id: ID) {
+      job(_id: $_id) {
         _id
         personel
         rate
@@ -35,7 +35,7 @@ export default class JobDetails extends React.Component {
       }
     }`;
 
-    const data = await graphQLFetch(query, { id });
+    const data = await graphQLFetch(query, { _id });
     if (data) {
       this.setState({ details: data.job });
     }

@@ -35,21 +35,41 @@ export default class JobList extends React.Component {
       const { location: { search } } = this.props;
       const params = new URLSearchParams(search);
       const vars = {};
-      if (params.get('status')) {
-        vars.status = params.get('status');
-      }
-      const query = `
-      query getJob($_id: ID, $currency: String, $status: String) {
-        job(_id: $_id, currency: $currency, status: $status) {
-          _id
-          personel
-          representative { name _id cid email phone}
-          location { country address postcode city cid _id}
-          title
-          company {name}
-          status
-          start
-          end
+
+      if (params.get('status')) vars.status = params.get('status');
+      if (params.get('title')) vars.title = params.get('title');
+      if (params.get('company')) vars.company = params.get('company');
+      const personMin = parseInt(params.get('personMin'), 10);
+      if (!Number.isNaN(personMin)) vars.personMin = personMin;
+      const personMax = parseInt(params.get('personMax'), 10);
+      if (!Number.isNaN(personMax)) vars.personMax = personMax;
+
+      const query = `query getJob(
+        $_id: ID,
+        $title: String,
+        $currency: String,
+        $status: String,
+        $company: ID,
+        $personMin: Int,
+        $personMax: Int) {
+        job(
+          _id: $_id,
+          title: $title,
+          currency: $currency,
+          status: $status,
+          company: $company,
+          personMin: $personMin,
+          personMax: $personMax
+        ) {
+            _id
+            personel
+            representative { name _id cid email phone}
+            location { country address postcode city cid _id}
+            title
+            company {name}
+            status
+            start
+            end
         }
       }
       `;
@@ -85,7 +105,7 @@ export default class JobList extends React.Component {
       return (
         <React.Fragment>
           <h1>Job Tracker</h1>
-          <JobsFilter />
+          <JobsFilter comp={this.state.companies} />
           <hr />
           <JobTable jobs={this.state.jobs} />
           <hr />

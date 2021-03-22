@@ -16,11 +16,18 @@ export default class JobDetails extends React.Component {
         locValue: null,
         title: "",
         personel: 0,
+        rate: 0,
+        currency: "PLN",
+        description: "",
+        status: "New",
+        start: new Date(),
+        end: new Date(),
+        jobId: null,
+        skills: [],
+        availSkills: {}
     };
     this.onCompanySelectedHandler = this.onCompanySelectedHandler.bind(this);
-    this.onLocationSelectHandler = this.onLocationSelectHandler.bind(this);
-    this.onRepSelectHandler = this.onRepSelectHandler.bind(this);
-    this.onInputChange = this.onInputChange.bind(this)
+    this.onValueChange = this.onValueChange.bind(this)
   } 
 
   componentDidMount() {
@@ -29,10 +36,23 @@ export default class JobDetails extends React.Component {
       this.loadLoc(this.state.companyValue)
     })
     this.loadCompany()
+    this.loadSkills()
+  }
+
+  componentDidUpdate(prevProps) {
+    const { match: { params: { id: prevId } } } = prevProps;
+    const { match: { params: { id } } } = this.props;
+    if (id !== prevId) {
+      this.loadDetails(this.state.id).then(() => {
+        this.loadRep(this.state.companyValue)
+        this.loadLoc(this.state.companyValue)
+      })
+      this.loadCompany()
+      this.loadSkills()
+    }
   }
 
   async loadRep(cid) {
-    console.log('cid', cid);
     const query = `query getRep($cid: ID) {
       representative(cid: $cid) {
         _id
@@ -71,20 +91,22 @@ export default class JobDetails extends React.Component {
     this.setState({ companyValue: e.target.value });
   }
 
-  onLocationSelectHandler(e) {
-    this.setState({ locValue: e.target.value });
-  }
-
-  onRepSelectHandler(e) {
-    this.setState({ repValue: e.target.value });
-  }
-
-  onInputChange(e) {
+  onValueChange(e) {
     const value = e.target.value
-    this.setState({
-      ...this.state,
-      [e.target.name]: value
-    });
+    if (e.target.name === "skills") {
+      let add = Array.from(e.target.selectedOptions, option => option.value);
+      this.setState({skills: add});      
+    }
+    else if (e.target.name === "start" || e.target.name === "end") {
+      console.log(e.target.value, e.target.name);
+      this.setState({[e.target.name]: new Date(e.target.value)})
+    }
+    else {
+      this.setState({
+        ...this.state,
+        [e.target.name]: value
+      });
+    }
   }
 
   createCompItems() {
@@ -117,9 +139,20 @@ export default class JobDetails extends React.Component {
       this.setState({ companies: data.company })
     }
   }
+  async loadSkills() {
+    const query = `query getSkills {
+      skill {
+        name
+      }
+    }`
+    const data = await graphQLFetch(query);
+    if (data) {
+      console.log(data.skill);
+      this.setState({ availSkills: data.skill })
+    }
+  }
 
   async loadDetails(_id) {
-    console.log('to id',_id);
     const query = `query getJob($_id: ID) {
       job(_id: $_id) {
         _id
@@ -141,15 +174,35 @@ export default class JobDetails extends React.Component {
 
     const data = await graphQLFetch(query, { _id });
     if (data) {
-      console.log(data.job[0]);
       const setData = data.job[0]
       console.log(3210, setData);
+      this.setState({jobId: setData._id})
       this.setState({companyValue: setData.company._id})
       this.setState({repValue: setData.representative._id})
       this.setState({locValue: setData.location._id})
       this.setState({title: setData.title})
       this.setState({personel: setData.personel})
+      this.setState({rate: setData.rate})
+      this.setState({currency: setData.currency})
+      this.setState({description: setData.description})
+      this.setState({status: setData.status})
+      this.setState({start: setData.start})
+      this.setState({end: setData.end})
     }
+  }
+
+
+  createSkillsItems() {
+    const options = [];
+    const skills = this.state.availSkills;
+    for (let i = 0; i < skills.length; i++) {
+      options.push(
+        <option key={i} value={skills[i]._id}>
+          {skills[i].name}
+        </option>
+      );
+    }
+    return options;
   }
 
   createRepItems() {
@@ -179,48 +232,99 @@ export default class JobDetails extends React.Component {
   }
 
   render() {
-    const companies = this.state.companies
-    const compValue = this.state.companyValue
-    const locValue = this.state.locValue
-    const repValue = this.state.repValue
-    const loc = this.state.locations
-    const rep = this.state.representatives
-    const title = this.state.title
-    const personel = this.state.personel
-    console.log('a',this.props.match.params);
-    console.log('p', personel);
-    return(<div>
-      <Link to={`/details/${this.state.id}`}>Go back</Link>
-      <h3>Select company:</h3>
-      {companies && compValue && <select
-              name="company"
-              id="company"
-              value={compValue}
-              onChange={this.onCompanySelectedHandler}
-            >
-              {this.createCompItems()}
-        </select>}
-        <h3>Select representative:</h3>
-        {rep && repValue && <select name="representative" value={repValue} onChange={this.onRepSelectHandler}>{this.createRepItems()}</select>}
-        <h3>Select location:</h3>
-        {loc && locValue && <select name="location" value={locValue} onChange={this.onLocationSelectHandler}>{this.createLocItems()}</select>}
-        <h3>Provide offer title</h3>
+    const {
+      companies,
+      companyValue,
+      locValue, repValue,
+      locations,
+      representatives,
+      title,
+      personel,
+      jobId,
+      rate,
+      currency,
+      description,
+      availSkills,
+      skills,
+      status
+    } = this.state 
+    console.log(this.state);
+    const start = this.state.start.toISOString().split("T")[0]
+    const end = this.state.end.toISOString().split("T")[0]
+    return(
+      <div>
+      {jobId ? (
+        <div>
+        <Link to={`/details/${this.state.id}`}>Go back</Link>
+        <h3>Select company:</h3>
+        {companies && companyValue &&
+          <select
+            name="company"
+            id="company"
+            value={companyValue}
+            onChange={this.onCompanySelectedHandler}
+          >
+            {this.createCompItems()}
+          </select>}
+          <h3>Select representative:</h3>
+          {representatives && repValue && <select name="repValue" value={repValue} onChange={this.onValueChange}>{this.createRepItems()}</select>}
+          <h3>Select location:</h3>
+          {locations && locValue && <select name="locValue" value={locValue} onChange={this.onValueChange}>{this.createLocItems()}</select>}
+          <h3>Provide offer title</h3>
             <input
               type="text"
               name="title"
               placeholder="Title"
-              value={this.state.title}
-              onChange={this.onInputChange}
+              value={title}
+              onChange={this.onValueChange}
             />
-        <h3>Provide offer personel</h3>
+          <h3>Provide offer representative</h3>
             <input
               type="number"
               name="personel"
               placeholder="Personel"
               step="1"
-              value={this.state.personel}
-              onChange={this.onInputChange}
+              value={personel}
+              onChange={this.onValueChange}
             />
-    </div>)
-  }
+          <h3>Provide offer rate</h3>
+            <input
+              type="number"
+              name="rate"
+              step="1"
+              value={rate}
+              onChange={this.onValueChange}
+            />
+          <h3>Provide currency:</h3>
+            <select name="currency" value={currency} onChange={this.onValueChange}>
+              <option value="PLN">PLN</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+            </select>
+          <h3>Provide description:</h3>
+            <textarea name="description" value={description} onChange={this.onValueChange} />
+          <h3>Provide skills:</h3>
+            {availSkills && 
+              <select name="skills" value={skills} onChange={this.onValueChange} multiple>
+                {this.createSkillsItems()}
+              </select>
+            }
+          <h3>Define status:</h3>
+            <select name="status" value={status} onChange={this.onValueChange}>
+              <option value="New">New</option>
+              <option value="Assigned">Assigned</option>
+              <option value="Negotiation">Negotiation</option>
+              <option value="Signed">Signed</option>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Closed">Closed</option>
+            </select>
+          <h3>Define start date:</h3>
+            {<input type="date" name="start" value={start} onChange={this.onValueChange} />}
+          <h3>Define end date:</h3>
+            <input type="date" name="end" value={end} onChange={this.onValueChange} />
+      </div>
+      ) : (<p>Job with this id not found.</p>)  
+    }
+    </div>
+  )}
 }

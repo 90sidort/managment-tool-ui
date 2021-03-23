@@ -24,7 +24,7 @@ export default class JobDetails extends React.Component {
         rate
         currency
         description
-        skills {name}
+        skills {_id, name}
         agent { name _id cid email phone}
         representative { name _id cid email phone}
         location { country address postcode city cid _id}
@@ -76,7 +76,7 @@ export default class JobDetails extends React.Component {
             ) : ('Assign to agent')}
             <h4>Skills:</h4>
               <div>
-                {details.skills.length > 0 ? (details.skills.map((skil) => <p>{skill.name}</p>) ) : ("Provide skills")}
+                {details.skills.length > 0 ? (details.skills.map((skill) => <p key={skill._id}> - {skill.name}</p>) ) : ("Provide skills")}
               </div>
             <h4>Status: {details.status}</h4>
             <h4>Start: {details.start.toISOString()}</h4>

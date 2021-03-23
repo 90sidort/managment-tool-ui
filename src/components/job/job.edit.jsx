@@ -88,8 +88,8 @@ export default class JobDetails extends React.Component {
       rate: parseFloat(form.rate.value),
       currency: form.currency.value,
       description: form.description.value,
-      // skills: Array.from(form.skills.selectedOptions, option => option.value),
-      status: 'New',
+      skills: Array.from(form.skills.selectedOptions, option => option.value),
+      status: form.status.value,
       start: new Date(form.start.value),
       end: new Date(form.end.value),
       created: new Date(),
@@ -155,6 +155,7 @@ export default class JobDetails extends React.Component {
     const query = `
     query getSkills {
       skill {
+        _id
         name
       }
     }`
@@ -207,7 +208,7 @@ export default class JobDetails extends React.Component {
         rate
         currency
         description
-        skills {name}
+        skills {_id}
         agent { name _id cid email phone}
         representative { name _id cid email phone}
         location { country address postcode city cid _id}
@@ -222,6 +223,7 @@ export default class JobDetails extends React.Component {
     const data = await graphQLFetch(query, { _id });
     if (data) {
       const setData = data.job[0]
+      console.log(123, data.job[0]);
       this.setState({jobId: setData._id})
       this.setState({companyValue: setData.company._id})
       this.setState({repValue: setData.representative._id})
@@ -234,6 +236,7 @@ export default class JobDetails extends React.Component {
       this.setState({status: setData.status})
       this.setState({start: setData.start})
       this.setState({end: setData.end})
+      this.setState({skills: setData.skills.map(function(skill) { return skill._id; })})
     }
   }
 

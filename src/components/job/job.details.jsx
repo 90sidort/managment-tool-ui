@@ -10,6 +10,7 @@ export default class JobDetails extends React.Component {
       details: {},
         id : this.props.match.params.id
     };
+    this.deleteJob = this.deleteJob.bind(this)
   }
 
   componentDidMount() {
@@ -42,12 +43,30 @@ export default class JobDetails extends React.Component {
     }
   }
 
+  async deleteJob(_id) {
+    const query = `
+    mutation deleteJob($_id: ID!) {
+      jobDelete(_id: $_id)
+    }
+    `
+
+    const data = await graphQLFetch(query, { _id });
+    if (data) {
+      this.props.history.push("/jobs")
+    }
+  }
+
   render() {
     const details = this.state.details[0]
     console.log(details);
     return (
       <div>
         <Link to={`/edit/${this.state.id}`}>Edit</Link>
+        {' '}
+        <Link to={`/jobs/${this.state.id}`}>Panel view</Link>
+        {' '}
+        <button type="button" onClick={() => {this.deleteJob(this.state.id)}}>Delete</button>
+        {' '}
         <h3>Job details</h3>
         {details && (
           <div>

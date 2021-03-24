@@ -16,6 +16,7 @@ export default class JobList extends React.Component {
         companies: [],
       };
       this.createJob = this.createJob.bind(this);
+      this.deleteJob = this.deleteJob.bind(this)
     }
   
     componentDidMount() {
@@ -100,6 +101,20 @@ export default class JobList extends React.Component {
         this.loadData();
       }
     }
+
+    async deleteJob(_id) {
+      const query = `
+      mutation deleteJob($_id: ID!) {
+        jobDelete(_id: $_id)
+      }
+      `
+
+      const data = await graphQLFetch(query, { _id });
+      if (data) {
+        this.props.history.push("/jobs")
+        this.loadData();
+      }
+    }
   
     render() {
       return (
@@ -111,7 +126,7 @@ export default class JobList extends React.Component {
           <hr />
           <JobAdd createJob={this.createJob} comp={this.state.companies} />
           <hr />
-          <Route path="/jobs/:id" component={JobPanel}></Route>
+          <Route path="/jobs/:id" render={(props) => (<JobPanel {...props} deleteJob={this.deleteJob} />)} />
           <hr />
           <SkillList />
         </React.Fragment>

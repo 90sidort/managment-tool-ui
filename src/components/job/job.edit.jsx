@@ -94,9 +94,8 @@ export default class JobDetails extends React.Component {
       end: new Date(form.end.value),
       created: new Date(),
     };
-    console.log(job);
-
     this.updateData(this.state.id, job)
+    this.props.history.push("/jobs")
   }
 
   createOptions(name, element) {
@@ -264,7 +263,9 @@ export default class JobDetails extends React.Component {
       <div>
       {jobId ? (
       <div>
-        <Link to={`/details/${this.state.id}`}>Go back</Link>
+        <Link to={`/details/${this.state.id}`}>Fullscreen view</Link>
+        {' '}
+        <Link to={`/jobs/${this.state.id}`}>Panel view</Link>
         <form name="jobEdit" onSubmit={this.onSubmitHandle}>
           <h3>Select company:</h3>
             {companies && companyValue &&

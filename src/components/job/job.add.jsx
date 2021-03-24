@@ -94,13 +94,13 @@ export default class JobAdd extends React.Component {
     onCompanySelectedHandler(e) {
       this.loadRep(e.target.value);
       this.loadLoc(e.target.value);
-      this.setState({ companyValue: parseInt(e.target.value) });
+      this.setState({ companyValue: e.target.value });
     }
   
     onSubmitHandler(e) {
       e.preventDefault();
       const form = document.forms.jobAdd;
-      const company = document.getElementById('company');
+      console.log(this.state.companyValue);
       const job = {
         title: form.title.value,
         personel: parseInt(form.personel.value),
@@ -109,7 +109,7 @@ export default class JobAdd extends React.Component {
         currency: form.currency.value,
         representative: form.representative.value,
         location: form.location.value,
-        company: company.value,
+        company: this.state.companyValue,
         start: new Date(form.start.value),
         end: new Date(form.end.value),
         created: new Date(),

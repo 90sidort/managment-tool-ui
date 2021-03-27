@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button, Glyphicon } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import URLSearchParams from 'url-search-params';
 
@@ -154,17 +155,25 @@ class JobsFilter extends React.Component {
         onChange={this.onChangePersonMax}
       />
       {' '}
-      <button type="button" onClick={this.applyFilter}>Apply</button>
+      <Button
+        type="button"
+        bsStyle="primary"
+        onClick={this.applyFilter}
+      >
+        <Glyphicon glyph="glyphicon glyphicon-ok"/>
+      </Button>
       {' '}
-      <button
+      <Button
           type="button"
+          bsStyle="default"
           onClick={this.showOriginalFilter}
           disabled={!changed}
         >
-          Reset
-        </button>
+          <Glyphicon glyph="glyphicon glyphicon-remove"/>
+        </Button>
     </div>);
   }
 }
+
 
 export default withRouter(JobsFilter)

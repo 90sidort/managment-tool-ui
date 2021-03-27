@@ -4,6 +4,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import 'babel-polyfill';
 import 'whatwg-fetch';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import Page from './components/page.jsx';
 
 const element = (

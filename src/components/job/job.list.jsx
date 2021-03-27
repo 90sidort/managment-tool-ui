@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router';
+import { Label } from 'react-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch'
 import JobsFilter from "./job.filter.jsx"
@@ -119,7 +120,7 @@ export default class JobList extends React.Component {
     render() {
       return (
         <React.Fragment>
-          <h1>Job Tracker</h1>
+          <h1><Label>Job Tracker</Label></h1>
           <JobsFilter comp={this.state.companies} />
           <hr />
           <JobTable jobs={this.state.jobs} />

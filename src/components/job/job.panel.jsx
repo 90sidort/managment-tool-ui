@@ -1,5 +1,7 @@
 import React from 'react'
+import { Button, Glyphicon, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { NavLink, Link } from 'react-router-dom'
+
 import graphQLFetch from '../../utils/graphqlFetch'
 
 export default class JobPanel extends React.Component {
@@ -43,16 +45,26 @@ export default class JobPanel extends React.Component {
 
   render(){
       const desc = this.state.job.description
-      console.log(this.props);
+      const showTooltip = function(text) {
+        return (
+          <Tooltip id="show-tooltip" placement="top">{text}</Tooltip>
+        )
+      }
       return (
           <div>
-              <NavLink to="/">X</NavLink>
+              <OverlayTrigger delayShow={1000} overlay={showTooltip("Close panel")}>
+                <NavLink to="/"><Button bsStyle="warning"><Glyphicon glyph="glyphicon glyphicon-chevron-left" /></Button></NavLink>
+              </OverlayTrigger>
               {' '}
               <Link to={`/details/${this.state.job._id}`}>Fullscreen view</Link>
               {' '}
               <Link to={`/edit/${this.state.job._id}`}>Edit</Link>
               {' '}
-              <button type="button" onClick={() => {this.props.deleteJob(this.state.job._id)}}>Delete</button>
+              <OverlayTrigger delayShow={1000} overlay={showTooltip("Delete job")}>
+                <Button type="button" bsStyle="danger" onClick={() => {this.props.deleteJob(this.state.job._id)}}>
+                  <Glyphicon glyph="glyphicon glyphicon-remove-circle" />
+                </Button>
+              </OverlayTrigger>
               {' '}
               <p>{desc}</p>
           </div>

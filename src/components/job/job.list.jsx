@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route } from 'react-router';
-import { Label } from 'react-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch'
 import JobsFilter from "./job.filter.jsx"
@@ -8,6 +7,7 @@ import JobTable from "./job.table.jsx"
 import JobAdd from "./job.add.jsx"
 import SkillList from "../skill/skill.list.jsx"
 import JobPanel from './job.panel.jsx';
+import { Panel } from 'react-bootstrap';
 
 export default class JobList extends React.Component {
     constructor() {
@@ -120,9 +120,14 @@ export default class JobList extends React.Component {
     render() {
       return (
         <React.Fragment>
-          <h1><Label>Job Tracker</Label></h1>
-          <JobsFilter comp={this.state.companies} />
-          <hr />
+          <Panel>
+            <Panel.Heading>
+              <Panel.Title toggle>Filters</Panel.Title>    
+            </Panel.Heading>
+            <Panel.Body collapsible>
+              <JobsFilter comp={this.state.companies} />
+            </Panel.Body>
+          </Panel>
           <JobTable jobs={this.state.jobs} />
           <hr />
           <JobAdd createJob={this.createJob} comp={this.state.companies} />

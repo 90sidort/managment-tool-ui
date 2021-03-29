@@ -132,14 +132,19 @@ export default class JobAdd extends React.Component {
         <React.Fragment>
           <div>
             <h3>Select company to add job</h3>
-            <select
+            <Row>
+              <Col xs={8} sm={8} md={8} lg={8}>
+              <FormControl
+              componentClass="select"
               name="company"
-              id="company"
               defaultValue={-1}
+              id="company"
               onChange={this.onCompanySelectedHandler}
             >
               {this.createCompItems()}
-            </select>
+              </FormControl>
+              </Col>
+            </Row>
           </div>
           {this.state.companyValue !== -1 && (
             
@@ -157,10 +162,13 @@ export default class JobAdd extends React.Component {
                   <FormControl type="number" step={1} name="personel" placeholder="Personel"/>
                 </FormGroup>
               </Col>
+              <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
                   <ControlLabel>Rate /h</ControlLabel>
                   <FormControl type="number" step={.01} name="rate" placeholder="Rate/ h"/>
                 </FormGroup>
+              </Col>
+              <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
                 <ControlLabel>Currency:</ControlLabel>
                   <FormControl
@@ -172,10 +180,10 @@ export default class JobAdd extends React.Component {
                       <option value="EUR">EUR</option>
                   </FormControl>
                 </FormGroup>
-                <FormGroup>
-                  <ControlLabel>Description</ControlLabel>
-                  <FormControl componentClass="textarea" placeholder="Description" name="description"/>
-                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
                   <ControlLabel>Representative:</ControlLabel>
                     <FormControl
@@ -185,6 +193,8 @@ export default class JobAdd extends React.Component {
                       {this.createRepItems()}
                   </FormControl>
                 </FormGroup>
+              </Col>
+              <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
                   <ControlLabel>Location:</ControlLabel>
                     <FormControl
@@ -194,15 +204,32 @@ export default class JobAdd extends React.Component {
                       {this.createLocItems()}
                   </FormControl>
                 </FormGroup>
+              </Col>
+              <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
                   <ControlLabel>Start</ControlLabel>
                   <FormControl type="date" name="start" placeholder="Start"/>
                 </FormGroup>
+              </Col>
+              <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
                   <ControlLabel>End</ControlLabel>
                   <FormControl type="date" name="end" placeholder="End"/>
                 </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={8} sm={8} md={8} lg={8}>
+                <FormGroup>
+                  <ControlLabel>Description</ControlLabel>
+                  <FormControl componentClass="textarea" placeholder="Description" name="description"/>
+                </FormGroup>
+              </Col> 
+              </Row>
+              <Row>
+              <Col xs={8} sm={8} md={8} lg={8}>
                 <Button bsStyle="success" type="submit">Add</Button>
+                </Col>
               </Row>
             </Form>
           )}

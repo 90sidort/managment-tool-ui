@@ -131,10 +131,9 @@ export default class JobList extends React.Component {
           <JobTable jobs={this.state.jobs} />
           <hr />
           <JobAdd createJob={this.createJob} comp={this.state.companies} />
-          <hr />
           <Route path="/jobs/:id" render={(props) => (<JobPanel {...props} deleteJob={this.deleteJob} />)} />
           <hr />
-          <SkillList />
+          {/* <SkillList /> */}
         </React.Fragment>
       );
     }

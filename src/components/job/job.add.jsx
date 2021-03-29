@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button, ControlLabel, Form, FormControl, FormGroup, Row, Col } from 'react-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch'
 
@@ -100,7 +101,6 @@ export default class JobAdd extends React.Component {
     onSubmitHandler(e) {
       e.preventDefault();
       const form = document.forms.jobAdd;
-      console.log(this.state.companyValue);
       const job = {
         title: form.title.value,
         personel: parseInt(form.personel.value),
@@ -142,18 +142,69 @@ export default class JobAdd extends React.Component {
             </select>
           </div>
           {this.state.companyValue !== -1 && (
-            <form name="jobAdd" onSubmit={this.onSubmitHandler}>
-              <input type="text" name="title" placeholder="Title"></input>
-              <input type="number" name="personel" placeholder="Personel" step="1"></input>
-              <input type="number" name="rate" placeholder="Rate" step="0.01"></input>
-              <input type="text" name="description" placeholder="Description"></input>
-              <input type="text" name="currency" placeholder="Currency"></input>
-              <select name="representative">{this.createRepItems()}</select>
-              <select name="location">{this.createLocItems()}</select>
-              <input type="date" name="start" />
-              <input type="date" name="end" />
-              <button>Add</button>
-            </form>
+            
+            <Form name="jobAdd" onSubmit={this.onSubmitHandler}>
+              <Row>
+              <Col xs={6} sm={4} md={3} lg={2}>
+                <FormGroup>
+                  <ControlLabel>Title</ControlLabel>
+                  <FormControl type="text" name="title" placeholder="Title"/>
+                </FormGroup>
+              </Col>
+              <Col xs={6} sm={4} md={3} lg={2}>
+                <FormGroup>
+                  <ControlLabel>Personel</ControlLabel>
+                  <FormControl type="number" step={1} name="personel" placeholder="Personel"/>
+                </FormGroup>
+              </Col>
+                <FormGroup>
+                  <ControlLabel>Rate /h</ControlLabel>
+                  <FormControl type="number" step={.01} name="rate" placeholder="Rate/ h"/>
+                </FormGroup>
+                <FormGroup>
+                <ControlLabel>Currency:</ControlLabel>
+                  <FormControl
+                      componentClass="select"
+                      name="currency"
+                    >
+                      <option value="PLN">PLN</option>
+                      <option value="GBP">GBP</option>
+                      <option value="EUR">EUR</option>
+                  </FormControl>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Description</ControlLabel>
+                  <FormControl componentClass="textarea" placeholder="Description" name="description"/>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Representative:</ControlLabel>
+                    <FormControl
+                      componentClass="select"
+                      name="representative"
+                    >
+                      {this.createRepItems()}
+                  </FormControl>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Location:</ControlLabel>
+                    <FormControl
+                      componentClass="select"
+                      name="location"
+                    >
+                      {this.createLocItems()}
+                  </FormControl>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Start</ControlLabel>
+                  <FormControl type="date" name="start" placeholder="Start"/>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>End</ControlLabel>
+                  <FormControl type="date" name="end" placeholder="End"/>
+                </FormGroup>
+                <Button bsStyle="success" type="submit">Add</Button>
+              </Row>
+            </Form>
           )}
         </React.Fragment>
       );

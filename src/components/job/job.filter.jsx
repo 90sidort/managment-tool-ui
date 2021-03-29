@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Glyphicon } from 'react-bootstrap';
+import {ButtonToolbar, Glyphicon, Button, FormGroup, FormControl, ControlLabel, InputGroup, Row, Col} from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import URLSearchParams from 'url-search-params';
 
@@ -110,67 +110,82 @@ class JobsFilter extends React.Component {
     const personMin = this.state.personMin
     const personMax = this.state.personMax
     const title = this.state.title
-    return (<div>
-      Status:
-      {' '}
-      <select onChange={this.onStatusChange} value={status}>
-        <option value="">All</option>
-        <option value="New">New</option>
-        <option value="Assigned">Assigned</option>
-        <option value="Negotiation">Negotiation</option>
-        <option value="Signed">Signed</option>
-        <option value="Ongoing">Ongoind</option>
-        <option value="Closed">Closed</option>
-      </select>
-      {' '}
-      {companies &&
-        <select
-          name="company"
-          id="company"
-          value={company}
-          onChange={this.onCompanySelectedHandler}
-        >
-          <option value="">All</option>
-          {this.createCompItems()}
-        </select>
-      }
-      {' '}
-      Title:
-      <input
-        value={title}
-        onChange={this.onTitleChange}
-      />
-      {' '}
-      Personel between:
-      {' '}
-      <input
-        size={5}
-        value={personMin}
-        onChange={this.onChangePersonMin}
-      />
-      {' - '}
-      <input
-        size={5}
-        value={personMax}
-        onChange={this.onChangePersonMax}
-      />
-      {' '}
-      <Button
-        type="button"
-        bsStyle="primary"
-        onClick={this.applyFilter}
-      >
-        <Glyphicon glyph="glyphicon glyphicon-ok"/>
-      </Button>
-      {' '}
-      <Button
-          type="button"
-          bsStyle="default"
-          onClick={this.showOriginalFilter}
-          disabled={!changed}
-        >
-          <Glyphicon glyph="glyphicon glyphicon-remove"/>
-        </Button>
+    return (
+      <div>
+      <Row>
+        <Col xs={6} sm={4} md={3} lg={2}>
+          <FormGroup>
+            <ControlLabel>Status:</ControlLabel>
+            <FormControl
+                componentClass="select"
+                value={status}
+                onChange={this.onStatusChange}
+              >
+                <option value="">All</option>
+                <option value="New">New</option>
+                <option value="Assigned">Assigned</option>
+                <option value="Negotiation">Negotiation</option>
+                <option value="Signed">Signed</option>
+                <option value="Ongoing">Ongoind</option>
+                <option value="Closed">Closed</option>
+              </FormControl>
+          </FormGroup>
+        </Col>
+        <Col xs={6} sm={4} md={3} lg={2}>
+        {companies &&<FormGroup>
+          <ControlLabel>Company:</ControlLabel>
+          <FormControl
+              componentClass="select"
+              value={company}
+              onChange={this.onCompanySelectedHandler}
+            >
+              <option value="">All</option>
+              {this.createCompItems()}
+            </FormControl>
+        </FormGroup>}
+        </Col>
+        <Col xs={6} sm={4} md={3} lg={2}>
+          <FormGroup>
+            <ControlLabel>Title</ControlLabel>
+            <FormControl
+              type="text"
+              value={title}
+              onChange={this.onTitleChange}
+            />
+          </FormGroup>
+        </Col>
+        <Col xs={6} sm={4} md={3} lg={2}>
+        <FormGroup>
+            <ControlLabel>Personel:</ControlLabel>
+            <InputGroup>
+              <FormControl value={personMin} onChange={this.onChangePersonMin} />
+              <InputGroup.Addon>-</InputGroup.Addon>
+              <FormControl value={personMax} onChange={this.onChangePersonMax} />
+            </InputGroup>
+          </FormGroup>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={6} sm={4} md={3} lg={2}>
+          <ButtonToolbar>
+            <Button
+              type="button"
+              bsStyle="primary"
+              onClick={this.applyFilter}
+            >
+              <Glyphicon glyph="glyphicon glyphicon-ok"/>
+            </Button>
+            <Button
+              type="button"
+              bsStyle="default"
+              onClick={this.showOriginalFilter}
+              disabled={!changed}
+            >
+              <Glyphicon glyph="glyphicon glyphicon-remove"/>
+            </Button>
+          </ButtonToolbar>
+        </Col>
+      </Row>
     </div>);
   }
 }

@@ -101,12 +101,26 @@ export default class JobPanel extends React.Component {
           <ListGroup style={ { wordBreak: 'break-all' }}>
               {data.title && <ListGroupItem>Title: {data.title}</ListGroupItem>}
               {data.description && <ListGroupItem>{data.description}</ListGroupItem>}
+              {data.status && <ListGroupItem>Status: {data.status}</ListGroupItem>}
+              {data.start && <ListGroupItem>From: {data.start.toISOString().split("T")[0]}</ListGroupItem>}
+              {data.end && <ListGroupItem> To: {data.end.toISOString().split("T")[0]}</ListGroupItem>}
+              {data.personel && <ListGroupItem>Personel: {data.personel}</ListGroupItem>}
               {data.company && <ListGroupItem>Company: {data.company.name}</ListGroupItem>}
               {data.rate && <ListGroupItem>Rate/ h: {data.rate} {data.currency}</ListGroupItem>}
               {data.location && 
-                <ListGroupItem>
-                  {`Country: ${data.location.country}, City: ${data.location.city}, Address: ${data.location.city}, ZIP: ${data.location.postcode}`}
+                <ListGroupItem style={{whiteSpace: "pre"}}>
+                  {`Location:
+                  ${data.location.country},
+                  ${data.location.city}, ${data.location.postcode}
+                  ${data.location.address}`}
                 </ListGroupItem>}
+              {data.representative && 
+              <ListGroupItem style={{whiteSpace: "pre"}}>
+                {`Representative:
+                ${data.representative.name},
+                ${data.representative.email},
+                ${data.representative.phone}`}
+              </ListGroupItem>}
             </ListGroup>
           </Col>
         </Row>

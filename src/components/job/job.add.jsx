@@ -13,6 +13,7 @@ export default class JobAdd extends React.Component {
       };
       this.onSubmitHandler = this.onSubmitHandler.bind(this);
       this.onCompanySelectedHandler = this.onCompanySelectedHandler.bind(this);
+      this.closeAddPanel = this.closeAddPanel.bind(this)
     }
   
     async loadRep(cid) {
@@ -98,6 +99,10 @@ export default class JobAdd extends React.Component {
       this.setState({ companyValue: e.target.value });
     }
   
+    closeAddPanel() {
+      this.setState({companyValue : -1})
+    }
+
     onSubmitHandler(e) {
       e.preventDefault();
       const form = document.forms.jobAdd;
@@ -138,6 +143,7 @@ export default class JobAdd extends React.Component {
               componentClass="select"
               name="company"
               defaultValue={-1}
+              value={this.state.companyValue}
               id="company"
               onChange={this.onCompanySelectedHandler}
             >
@@ -229,6 +235,8 @@ export default class JobAdd extends React.Component {
               <Row>
               <Col xs={8} sm={8} md={8} lg={8}>
                 <Button bsStyle="success" type="submit">Add</Button>
+                {' '}
+                <Button bsStyle="warning" onClick={this.closeAddPanel}>Close</Button>
                 </Col>
               </Row>
             </Form>

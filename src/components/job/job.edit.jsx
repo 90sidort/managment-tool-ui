@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button, Col, ControlLabel, Form, FormControl, FormGroup, Glyphicon, OverlayTrigger, Panel, Tooltip } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 import { Link } from 'react-router-dom';
 
 import graphQLFetch from '../../utils/graphqlFetch';
@@ -222,7 +224,6 @@ export default class JobDetails extends React.Component {
     const data = await graphQLFetch(query, { _id });
     if (data) {
       const setData = data.job[0]
-      console.log(123, data.job[0]);
       this.setState({jobId: setData._id})
       this.setState({companyValue: setData.company._id})
       this.setState({repValue: setData.representative._id})
@@ -259,127 +260,224 @@ export default class JobDetails extends React.Component {
     console.log(this.state);
     const start = this.state.start.toISOString().split("T")[0]
     const end = this.state.end.toISOString().split("T")[0]
+    const showTooltip = function(text) {
+      return (
+        <Tooltip id="show-tooltip" placement="top">{text}</Tooltip>
+      )
+    }
     return(
       <div>
       {jobId ? (
-      <div>
-        <Link to={`/details/${this.state.id}`}>Fullscreen view</Link>
-        {' '}
-        <Link to={`/jobs/${this.state.id}`}>Panel view</Link>
-        <form name="jobEdit" onSubmit={this.onSubmitHandle}>
-          <h3>Select company:</h3>
-            {companies && companyValue &&
-              <select
-                name="company"
-                id="company"
-                value={companyValue}
-                onChange={this.onCompanySelectedHandler}
-              >
-                {this.createOptions("companies", companies)}
-              </select>
-            }
-          <h3>Select representative:</h3>
-            {representatives && repValue &&
-              <select
-                name="repValue"
-                value={repValue}
-                onChange={this.onValueChange}
-              >
-                {this.createOptions("rep", representatives)}
-              </select>
-            }
-          <h3>Select location:</h3>
+      <Panel>
+        <Panel.Heading>
+          <LinkContainer to={`/details/${this.state.id}`}>
+            <OverlayTrigger delayShow={1000} overlay={showTooltip("Fullscreen view")}>
+              <Button bsStyle="info" bsSize="small">
+                <Glyphicon glyph="glyphicon glyphicon-resize-full" />
+              </Button>
+            </OverlayTrigger>
+          </LinkContainer>
+          {' '}
+          <LinkContainer to={`/jobs/${this.state.id}`}>
+            <OverlayTrigger delayShow={1000} overlay={showTooltip("Panel view")}>
+              <Button bsStyle="success" bsSize="small">
+                <Glyphicon glyph="glyphicon glyphicon-resize-small" />
+              </Button>
+            </OverlayTrigger>
+          </LinkContainer>
+        </Panel.Heading>
+        <Form horizontal name="jobEdit" onSubmit={this.onSubmitHandle}>
+        {companies && companyValue &&
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>Company</Col>
+              <Col sm={8}>
+                <FormControl
+                  componentClass="select"
+                  name="company"
+                  id="company"
+                  value={companyValue}
+                  onChange={this.onCompanySelectedHandler}
+                >
+                  {this.createOptions("companies", companies)}
+                </FormControl>
+              </Col>
+              <Col sm={2} />
+            </FormGroup>}
+            {representatives && repValue && 
+              <FormGroup>
+                <Col componentClass={ControlLabel} sm={2}>Representative</Col>
+                <Col sm={8}>
+                  <FormControl
+                    componentClass="select"
+                    name="repValue"
+                    id="repValue"
+                    value={repValue}
+                    onChange={this.onValueChange}
+                  >
+                    {this.createOptions("rep", representatives)}
+                  </FormControl>
+                </Col>
+                <Col sm={2} />
+              </FormGroup>}
             {locations && locValue &&
-              <select
-                name="locValue"
-                value={locValue}
+              <FormGroup>
+                <Col componentClass={ControlLabel} sm={2}>Location</Col>
+                <Col sm={8}>
+                  <FormControl
+                    componentClass="select"
+                    name="locValue"
+                    id="locValue"
+                    value={locValue}
+                    onChange={this.onValueChange}
+                  >
+                    {this.createOptions("loc", locations)}
+                  </FormControl>
+                </Col>
+                <Col sm={2} />
+              </FormGroup>}
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>Title</Col>
+            <Col sm={8}>
+              <FormControl
+                type="text"
+                name="title"
+                placeholder="Title"
+                value={title}
                 onChange={this.onValueChange}
-              >
-                {this.createOptions("loc", locations)}
-              </select>
-            }
-          <h3>Provide offer title</h3>
-            <input
-              type="text"
-              name="title"
-              placeholder="Title"
-              value={title}
-              onChange={this.onValueChange}
-            />
-          <h3>Provide offer representative</h3>
-            <input
-              type="number"
-              name="personel"
-              placeholder="Personel"
-              step="1"
-              value={personel}
-              onChange={this.onValueChange}
-            />
-          <h3>Provide offer rate</h3>
-            <input
-              type="number"
-              name="rate"
-              step="1"
-              value={rate}
-              onChange={this.onValueChange}
-            />
-          <h3>Provide currency:</h3>
-            <select
-              name="currency"
-              value={currency}
-              onChange={this.onValueChange}
-            >
-              <option value="PLN">PLN</option>
-              <option value="EUR">EUR</option>
-              <option value="GBP">GBP</option>
-            </select>
-          <h3>Provide description:</h3>
-            <textarea
-              name="description"
-              value={description}
-              onChange={this.onValueChange}
-            />
-          <h3>Provide skills:</h3>
-            {availSkills && 
-              <select
-                name="skills"
-                value={skills}
+              />
+            </Col>
+            <Col sm={2} />
+          </FormGroup>
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>Personel</Col>
+            <Col sm={8}>
+              <FormControl
+                type="number"
+                name="personel"
+                placeholder="Personel"
+                value={personel}
+                step="1"
                 onChange={this.onValueChange}
-                multiple
-              >
-                {this.createOptions("skills", availSkills)}
-              </select>
-            }
-          <h3>Define status:</h3>
-            <select
-              name="status"
-              value={status}
-              onChange={this.onValueChange}
-            >
-              <option value="New">New</option>
-              <option value="Assigned">Assigned</option>
-              <option value="Negotiation">Negotiation</option>
-              <option value="Signed">Signed</option>
-              <option value="Ongoing">Ongoing</option>
-              <option value="Closed">Closed</option>
-            </select>
-          <h3>Define start date:</h3>
-            <input
-              type="date"
-              name="start"
-              value={start}
-              onChange={this.onValueChange}
-            />
-          <h3>Define end date:</h3>
-            <input
-              type="date"
-              name="end"
-              value={end}
-              onChange={this.onValueChange}
-            />
-          <button type="submit">Save</button>
-        </form>
-      </div>
+              />
+            </Col>
+            <Col sm={2} />
+          </FormGroup>
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>Rate /h</Col>
+            <Col sm={8}>
+              <FormControl
+                type="number"
+                name="rate"
+                placeholder="Rate"
+                value={rate}
+                step=".01"
+                onChange={this.onValueChange}
+              />
+            </Col>
+            <Col sm={2} />
+          </FormGroup>
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>Currency</Col>
+            <Col sm={8}>
+              <FormControl
+                  componentClass="select"
+                  name="currency"
+                  id="currency"
+                  value={currency}
+                  onChange={this.onValueChange}
+                >
+                  <option value="PLN">PLN</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                </FormControl>
+            </Col>
+            <Col sm={2} />
+          </FormGroup>
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>Description</Col>
+            <Col sm={8}>
+              <FormControl
+                type="textarea"
+                name="description"
+                placeholder="Description"
+                value={description}
+                onChange={this.onValueChange}
+              />
+            </Col>
+            <Col sm={2} />
+          </FormGroup>
+          {availSkills &&
+            <FormGroup>
+              <Col componentClass={ControlLabel} sm={2}>Desired skills</Col>
+              <Col sm={8}>
+                <FormControl
+                  componentClass="select"
+                  name="skills"
+                  id="skills"
+                  value={skills}
+                  multiple
+                  onChange={this.onValueChange}
+                >
+                  {this.createOptions("skills", availSkills)}
+                </FormControl>
+              </Col>
+              <Col sm={2} />
+            </FormGroup>}
+            <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>Status</Col>
+            <Col sm={8}>
+              <FormControl
+                  componentClass="select"
+                  name="status"
+                  id="status"
+                  value={status}
+                  onChange={this.onValueChange}
+                >
+                  <option value="New">New</option>
+                  <option value="Assigned">Assigned</option>
+                  <option value="Negotiation">Negotiation</option>
+                  <option value="Signed">Signed</option>
+                  <option value="Ongoing">Ongoing</option>
+                  <option value="Closed">Closed</option>
+                </FormControl>
+            </Col>
+            <Col sm={2} />
+          </FormGroup>
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>Start</Col>
+            <Col sm={8}>
+              <FormControl
+                type="date"
+                name="start"
+                placeholder="Start"
+                value={start}
+                onChange={this.onValueChange}
+              />
+            </Col>
+            <Col sm={2} />
+          </FormGroup>
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>End</Col>
+            <Col sm={8}>
+              <FormControl
+                type="date"
+                name="end"
+                placeholder="End"
+                value={end}
+                onChange={this.onValueChange}
+              />
+            </Col>
+            <Col sm={2} />
+          </FormGroup>
+          <FormGroup>
+            <Col sm={2} />
+            <Col sm={8}>
+             <Button bsStyle="success" type="submit">Save</Button>
+            </Col>
+            <Col sm={2} />
+          </FormGroup>
+        </Form>
+      </Panel>
       ) : (
         <p>Job with this id not found.</p>
       )  

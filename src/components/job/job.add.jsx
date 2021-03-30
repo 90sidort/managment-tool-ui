@@ -142,7 +142,6 @@ export default class JobAdd extends React.Component {
               <FormControl
               componentClass="select"
               name="company"
-              defaultValue={-1}
               value={this.state.companyValue}
               id="company"
               onChange={this.onCompanySelectedHandler}

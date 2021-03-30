@@ -17,6 +17,7 @@ class JobsFilter extends React.Component {
     };
     this.onStatusChange = this.onStatusChange.bind(this);
     this.applyFilter = this.applyFilter.bind(this);
+    this.clearFilters = this.clearFilters.bind(this)
     this.showOriginalFilter = this.showOriginalFilter.bind(this);
     this.onCompanySelectedHandler = this.onCompanySelectedHandler.bind(this);
     this.onChangePersonMin = this.onChangePersonMin.bind(this);
@@ -84,9 +85,28 @@ class JobsFilter extends React.Component {
     if (title) params.set('title', title);
   
     const search = params.toString() ? `?${params.toString()}` : '';
-    console.log('search',search);
     history.push({ pathname: '/jobs', search });
-    }
+  }
+
+  clearFilters() {
+    const history = this.props.history;
+    this.setState({
+      status: '',
+      company: '',
+      personMax: '',
+      personMin: '',
+      title: '',
+      changed: false,
+    })
+    const params = new URLSearchParams();
+    params.set('status', '');
+    params.set('company', '')
+    params.set('personMin', '');
+    params.set('personMax', '');
+    params.set('title', '');
+
+    history.push({ pathname: '/jobs', search: '' });
+  }
 
   createCompItems() {
     const options = [];
@@ -177,11 +197,18 @@ class JobsFilter extends React.Component {
             </Button>
             <Button
               type="button"
+              bsStyle="danger"
+              onClick={this.clearFilters}
+            >
+              <Glyphicon glyph="glyphicon glyphicon-remove"/>
+            </Button>
+            <Button
+              type="button"
               bsStyle="default"
               onClick={this.showOriginalFilter}
               disabled={!changed}
             >
-              <Glyphicon glyph="glyphicon glyphicon-remove"/>
+              <Glyphicon glyph="glyphicon glyphicon-erase"/>
             </Button>
           </ButtonToolbar>
         </Col>

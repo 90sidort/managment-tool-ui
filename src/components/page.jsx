@@ -1,5 +1,5 @@
 import React from 'react';
-import { Glyphicon, Grid, MenuItem, Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap';
+import { Glyphicon, Grid, Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import Contents from './content.jsx';

@@ -1,9 +1,21 @@
 import React from 'react';
-import { Button, Col, ControlLabel, Form, FormControl, FormGroup, Glyphicon, OverlayTrigger, Panel, Tooltip } from 'react-bootstrap';
+import {
+  Button,
+  Col,
+  ControlLabel,
+  Form,
+  FormControl,
+  FormGroup,
+  Glyphicon,
+  OverlayTrigger,
+  Panel,
+  Tooltip,
+  Alert
+} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Link } from 'react-router-dom';
 
 import graphQLFetch from '../../utils/graphqlFetch';
+import editValidation from '../../utils/editValidation'
 
 export default class JobDetails extends React.Component {
   constructor(props) {
@@ -26,7 +38,8 @@ export default class JobDetails extends React.Component {
         end: new Date(),
         jobId: null,
         skills: [],
-        availSkills: {}
+        availSkills: {},
+        errors: {}
     };
     this.onCompanySelectedHandler = this.onCompanySelectedHandler.bind(this);
     this.onValueChange = this.onValueChange.bind(this)
@@ -78,6 +91,13 @@ export default class JobDetails extends React.Component {
     }
   }
 
+  dismissValidation(name) {
+    const newErrors = {...this.state.errors}
+    delete newErrors[name]
+    console.log(newErrors);
+    this.setState({ errors: newErrors });
+  }
+
   onSubmitHandle(e) {
     e.preventDefault();
     const form = document.forms.jobEdit;
@@ -96,8 +116,14 @@ export default class JobDetails extends React.Component {
       end: new Date(form.end.value),
       created: new Date(),
     };
-    this.updateData(this.state.id, job)
-    this.props.history.push("/jobs")
+    const errors = editValidation(job)
+    if (JSON.stringify(errors) === "{}") {
+      this.setState({errors})
+      this.updateData(this.state.id, job)
+      this.props.history.push("/jobs")
+    } else {
+      this.setState({errors})
+    }
   }
 
   createOptions(name, element) {
@@ -255,7 +281,8 @@ export default class JobDetails extends React.Component {
       description,
       availSkills,
       skills,
-      status
+      status,
+      errors
     } = this.state 
     console.log(this.state);
     const start = this.state.start.toISOString().split("T")[0]
@@ -300,6 +327,7 @@ export default class JobDetails extends React.Component {
                 >
                   {this.createOptions("companies", companies)}
                 </FormControl>
+                {errors.company && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("company")}>{errors.company}</Alert>}
               </Col>
               <Col sm={2} />
             </FormGroup>}
@@ -316,6 +344,7 @@ export default class JobDetails extends React.Component {
                   >
                     {this.createOptions("rep", representatives)}
                   </FormControl>
+                  {errors.representative && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("representative")}>{errors.representative}</Alert>}
                 </Col>
                 <Col sm={2} />
               </FormGroup>}
@@ -332,6 +361,7 @@ export default class JobDetails extends React.Component {
                   >
                     {this.createOptions("loc", locations)}
                   </FormControl>
+                  {errors.location && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("location")}>{errors.location}</Alert>}
                 </Col>
                 <Col sm={2} />
               </FormGroup>}
@@ -345,6 +375,7 @@ export default class JobDetails extends React.Component {
                 value={title}
                 onChange={this.onValueChange}
               />
+              {errors.title && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("title")}>{errors.title}</Alert>}
             </Col>
             <Col sm={2} />
           </FormGroup>
@@ -359,6 +390,7 @@ export default class JobDetails extends React.Component {
                 step="1"
                 onChange={this.onValueChange}
               />
+              {errors.personel && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("personel")}>{errors.personel}</Alert>}
             </Col>
             <Col sm={2} />
           </FormGroup>
@@ -373,6 +405,7 @@ export default class JobDetails extends React.Component {
                 step=".01"
                 onChange={this.onValueChange}
               />
+              {errors.rate && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("rate")}>{errors.rate}</Alert>}
             </Col>
             <Col sm={2} />
           </FormGroup>
@@ -390,6 +423,7 @@ export default class JobDetails extends React.Component {
                   <option value="EUR">EUR</option>
                   <option value="GBP">GBP</option>
                 </FormControl>
+                {errors.currency && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("currency")}>{errors.currency}</Alert>}
             </Col>
             <Col sm={2} />
           </FormGroup>
@@ -403,6 +437,7 @@ export default class JobDetails extends React.Component {
                 value={description}
                 onChange={this.onValueChange}
               />
+              {errors.description && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("description")}>{errors.description}</Alert>}
             </Col>
             <Col sm={2} />
           </FormGroup>
@@ -420,6 +455,7 @@ export default class JobDetails extends React.Component {
                 >
                   {this.createOptions("skills", availSkills)}
                 </FormControl>
+                {errors.skills && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("skills")}>{errors.skills}</Alert>}
               </Col>
               <Col sm={2} />
             </FormGroup>}
@@ -440,6 +476,7 @@ export default class JobDetails extends React.Component {
                   <option value="Ongoing">Ongoing</option>
                   <option value="Closed">Closed</option>
                 </FormControl>
+                {errors.status && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("status")}>{errors.status}</Alert>}
             </Col>
             <Col sm={2} />
           </FormGroup>
@@ -450,9 +487,12 @@ export default class JobDetails extends React.Component {
                 type="date"
                 name="start"
                 placeholder="Start"
+                onKeyDown={() => false}
                 value={start}
                 onChange={this.onValueChange}
+                onKeyDown={(e) => e.preventDefault()}
               />
+              {errors.start && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("start")}>{errors.start}</Alert>}
             </Col>
             <Col sm={2} />
           </FormGroup>
@@ -465,7 +505,9 @@ export default class JobDetails extends React.Component {
                 placeholder="End"
                 value={end}
                 onChange={this.onValueChange}
+                onKeyDown={(e) => e.preventDefault()}
               />
+              {errors.end && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("end")}>{errors.end}</Alert>}
             </Col>
             <Col sm={2} />
           </FormGroup>

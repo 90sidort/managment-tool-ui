@@ -1,6 +1,6 @@
 import React from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { NavLink, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 const JobRow = withRouter(({ job, location: { search } }) => {
   const selectLocation = { pathname: `/jobs/${job._id}`, search };

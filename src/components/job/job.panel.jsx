@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Glyphicon, OverlayTrigger, Tooltip, Grid, Row, Col, ListGroup, ListGroupItem, Panel } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { NavLink } from 'react-router-dom'
+import Toast from '../toast.jsx'
 
 import graphQLFetch from '../../utils/graphqlFetch'
 
@@ -9,8 +10,14 @@ export default class JobPanel extends React.Component {
     constructor(){
       super()
       this.state = {
-          job: {}
+          job: {},
+          toastVisible: false,
+          toastMessage: ' ',
+          toastType: 'success',
       }
+      this.showSuccess = this.showSuccess.bind(this);
+      this.showError = this.showError.bind(this);
+      this.dismissToast = this.dismissToast.bind(this);
     }
 
     componentDidMount() {
@@ -25,9 +32,24 @@ export default class JobPanel extends React.Component {
       }
     }
 
+    showSuccess(message) {
+      this.setState({
+        toastVisible: true, toastMessage: message, toastType: 'success',
+      });
+    }
+
+    showError(message) {
+      this.setState({
+        toastVisible: true, toastMessage: message, toastType: 'danger',
+      });
+    }
+    
+    dismissToast() {
+      this.setState({ toastVisible: false });
+    }
+
     async loadData() {
       const _id = this.props.match.params.id
-      console.log(_id);
       const query = `
       query getJob($_id: ID, $currency: String, $status: String) {
           job(_id: $_id, currency: $currency, status: $status) {
@@ -48,17 +70,18 @@ export default class JobPanel extends React.Component {
             created
           }
         }`;
-        const data = await graphQLFetch(query, { _id });
+        const data = await graphQLFetch(query, { _id }, this.showError);
         if (data) {
-          console.log(data.job);
           this.setState({ job: data.job[0] });
         } else {
+          this.showError('Unable to load data')
           this.setState({ job: {} });
         }
     }
 
   render(){
     const data = this.state.job
+    const { toastVisible, toastMessage, toastType } = this.state;
     const showTooltip = function(text) {
       return (
         <Tooltip id="show-tooltip" placement="top">{text}</Tooltip>
@@ -95,7 +118,6 @@ export default class JobPanel extends React.Component {
               </Button>
             </OverlayTrigger>
           </Panel.Heading>
-          {/* <Grid> */}
           <Row className="show-grid">
             <Col xs={12} md={8}>
             <ListGroup style={ { wordBreak: 'break-all' }}>
@@ -124,19 +146,15 @@ export default class JobPanel extends React.Component {
               </ListGroup>
             </Col>
           </Row>
-        {/* </Grid> */}
+        <Toast
+          showing={toastVisible}
+          onDismiss={this.dismissToast}
+          bsStyle={toastType}
+        >
+          {toastMessage}
+        </Toast>
       </Panel>
       
     )
   }
 }
-
-{/* <h2>{data.title}</h2>
-<p>{data.description}</p>
-<ul className="list-group">
-  <li className="list-group-item">Personel: {data.personel}</li>
-  {data.company && <li className="list-group-item">Company: {data.company.name}</li>}
-  <li className="list-group-item">Status: {data.status}</li>
-  <li className="list-group-item">Rate /h: {data.rate}{' '}{data.currency}</li>
-</ul> */}
-

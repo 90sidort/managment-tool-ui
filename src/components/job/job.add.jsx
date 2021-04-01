@@ -1,6 +1,17 @@
 import React from 'react';
-import { Button, ControlLabel, Form, FormControl, FormGroup, Row, Col } from 'react-bootstrap';
+import {
+  Button,
+  ControlLabel,
+  Form,
+  FormControl,
+  FormGroup,
+  Row,
+  Col,
+  Alert
+} from 'react-bootstrap';
 
+import addValidation from '../../utils/addValidation';
+import Toast from '../toast.jsx'
 import graphQLFetch from '../../utils/graphqlFetch'
 
 export default class JobAdd extends React.Component {
@@ -10,12 +21,35 @@ export default class JobAdd extends React.Component {
         companyValue: -1,
         representatives: [],
         locations: [],
+        errors: {},
+        toastVisible: false,
+        toastMessage: ' ',
+        toastType: 'success',
       };
       this.onSubmitHandler = this.onSubmitHandler.bind(this);
       this.onCompanySelectedHandler = this.onCompanySelectedHandler.bind(this);
       this.closeAddPanel = this.closeAddPanel.bind(this)
+      this.showSuccess = this.showSuccess.bind(this);
+      this.showError = this.showError.bind(this);
+      this.dismissToast = this.dismissToast.bind(this);
     }
   
+    showSuccess(message) {
+      this.setState({
+        toastVisible: true, toastMessage: message, toastType: 'success',
+      });
+    }
+
+    showError(message) {
+      this.setState({
+        toastVisible: true, toastMessage: message, toastType: 'danger',
+      });
+    }
+    
+    dismissToast() {
+      this.setState({ toastVisible: false });
+    }
+
     async loadRep(cid) {
       const query = `query getRep($cid: ID) {
         representative(cid: $cid) {
@@ -26,9 +60,11 @@ export default class JobAdd extends React.Component {
           name
         }
       }`;
-      const data = await graphQLFetch(query, { cid });
+      const data = await graphQLFetch(query, { cid }, this.showError);
       if (data) {
         this.setState({ representatives: data.representative });
+      } else {
+        this.showError('Unable to load data')
       }
     }
   
@@ -43,9 +79,11 @@ export default class JobAdd extends React.Component {
           postcode
         }
       }`;
-      const data = await graphQLFetch(query, { cid });
+      const data = await graphQLFetch(query, { cid }, this.showError);
       if (data) {
         this.setState({ locations: data.location });
+      } else {
+        this.showError('Unable to load data')
       }
     }
   
@@ -103,6 +141,13 @@ export default class JobAdd extends React.Component {
       this.setState({companyValue : -1})
     }
 
+    dismissValidation(name) {
+      const newErrors = {...this.state.errors}
+      delete newErrors[name]
+      console.log(newErrors);
+      this.setState({ errors: newErrors });
+    }
+
     onSubmitHandler(e) {
       e.preventDefault();
       const form = document.forms.jobAdd;
@@ -120,19 +165,26 @@ export default class JobAdd extends React.Component {
         created: new Date(),
         status: 'New',
       };
-      this.props.createJob(job);
-      form.title.value = ""
-      form.personel.value = ""
-      form.rate.value = ""
-      form.description.value = ""
-      form.representative.value = ""
-      form.location.value = ""
-      form.start.value = ""
-      form.end.value = ""
-      this.setState({companyValue : -1})
+      const errors = addValidation(job)
+      if (JSON.stringify(errors) === "{}") {
+        this.props.createJob(job);
+        form.title.value = ""
+        form.personel.value = ""
+        form.rate.value = ""
+        form.description.value = ""
+        form.representative.value = ""
+        form.location.value = ""
+        form.start.value = ""
+        form.end.value = ""
+        this.setState({companyValue : -1})
+      } else {
+        this.setState({errors})
+      }
     }
   
     render() {
+      const errors = this.state.errors
+      const { toastVisible, toastMessage, toastType } = this.state;
       return (
         <React.Fragment>
           <div>
@@ -148,6 +200,7 @@ export default class JobAdd extends React.Component {
             >
               {this.createCompItems()}
               </FormControl>
+              {errors.company && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("company")}>{errors.company}</Alert>}
               </Col>
             </Row>
           </div>
@@ -160,18 +213,21 @@ export default class JobAdd extends React.Component {
                   <ControlLabel>Title</ControlLabel>
                   <FormControl type="text" name="title" placeholder="Title"/>
                 </FormGroup>
+                {errors.title && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("title")}>{errors.title}</Alert>}
               </Col>
               <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
                   <ControlLabel>Personel</ControlLabel>
                   <FormControl type="number" step={1} name="personel" placeholder="Personel"/>
                 </FormGroup>
+                {errors.personel && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("personel")}>{errors.personel}</Alert>}
               </Col>
               <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
                   <ControlLabel>Rate /h</ControlLabel>
                   <FormControl type="number" step={.01} name="rate" placeholder="Rate/ h"/>
                 </FormGroup>
+                {errors.rate && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("rate")}>{errors.rate}</Alert>}
               </Col>
               <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
@@ -185,6 +241,7 @@ export default class JobAdd extends React.Component {
                       <option value="EUR">EUR</option>
                   </FormControl>
                 </FormGroup>
+                {errors.currency && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("currency")}>{errors.currency}</Alert>}
               </Col>
             </Row>
             <Row>
@@ -198,6 +255,7 @@ export default class JobAdd extends React.Component {
                       {this.createRepItems()}
                   </FormControl>
                 </FormGroup>
+                {errors.representative && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("representative")}>{errors.representative}</Alert>}
               </Col>
               <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
@@ -209,18 +267,21 @@ export default class JobAdd extends React.Component {
                       {this.createLocItems()}
                   </FormControl>
                 </FormGroup>
+                {errors.location && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("location")}>{errors.location}</Alert>}
               </Col>
               <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
                   <ControlLabel>Start</ControlLabel>
-                  <FormControl type="date" name="start" placeholder="Start"/>
+                  <FormControl type="date" name="start" placeholder="Start" onKeyDown={(e) => e.preventDefault()} />
                 </FormGroup>
+                {errors.start && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("start")}>{errors.start}</Alert>}
               </Col>
               <Col xs={6} sm={4} md={3} lg={2}>
                 <FormGroup>
                   <ControlLabel>End</ControlLabel>
-                  <FormControl type="date" name="end" placeholder="End"/>
+                  <FormControl type="date" name="end" placeholder="End" onKeyDown={(e) => e.preventDefault()} />
                 </FormGroup>
+                {errors.end && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("end")}>{errors.end}</Alert>}
               </Col>
             </Row>
             <Row>
@@ -229,6 +290,7 @@ export default class JobAdd extends React.Component {
                   <ControlLabel>Description</ControlLabel>
                   <FormControl componentClass="textarea" placeholder="Description" name="description"/>
                 </FormGroup>
+                {errors.description && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("description")}>{errors.description}</Alert>}
               </Col> 
               </Row>
               <Row>
@@ -240,6 +302,13 @@ export default class JobAdd extends React.Component {
               </Row>
             </Form>
           )}
+        <Toast
+          showing={toastVisible}
+          onDismiss={this.dismissToast}
+          bsStyle={toastType}
+        >
+          {toastMessage}
+        </Toast>
         </React.Fragment>
       );
     }

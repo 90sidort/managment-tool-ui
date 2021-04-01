@@ -1,13 +1,13 @@
 import React from 'react';
 import { Route } from 'react-router';
+import { Panel } from 'react-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch'
 import JobsFilter from "./job.filter.jsx"
 import JobTable from "./job.table.jsx"
 import JobAdd from "./job.add.jsx"
-import SkillList from "../skill/skill.list.jsx"
 import JobPanel from './job.panel.jsx';
-import { Panel } from 'react-bootstrap';
+import Toast from '../toast.jsx'
 
 export default class JobList extends React.Component {
     constructor() {
@@ -15,9 +15,15 @@ export default class JobList extends React.Component {
       this.state = {
         jobs: [],
         companies: [],
+        toastVisible: false,
+        toastMessage: ' ',
+        toastType: 'success',
       };
       this.createJob = this.createJob.bind(this);
       this.deleteJob = this.deleteJob.bind(this)
+      this.showSuccess = this.showSuccess.bind(this);
+      this.showError = this.showError.bind(this);
+      this.dismissToast = this.dismissToast.bind(this);
     }
   
     componentDidMount() {
@@ -31,6 +37,22 @@ export default class JobList extends React.Component {
       if (prevSearch !== search) {
         this.loadData();
       }
+    }
+
+    showSuccess(message) {
+      this.setState({
+        toastVisible: true, toastMessage: message, toastType: 'success',
+      });
+    }
+
+    showError(message) {
+      this.setState({
+        toastVisible: true, toastMessage: message, toastType: 'danger',
+      });
+    }
+    
+    dismissToast() {
+      this.setState({ toastVisible: false });
     }
   
     async loadData() {
@@ -75,10 +97,12 @@ export default class JobList extends React.Component {
         }
       }
       `;
-      const data = await graphQLFetch(query, vars);
-      if (data) {
-        this.setState({ jobs: data.job });
-      }
+      const data = await graphQLFetch(query, vars, this.showError);
+        if (data) {
+          this.setState({ jobs: data.job });
+        } else {
+          this.showError('Unable to load data')
+        }
     }
   
     async loadCompany() {
@@ -88,18 +112,23 @@ export default class JobList extends React.Component {
           name
         }
       }`;
-      const data = await graphQLFetch(query);
+      const data = await graphQLFetch(query, {}, this.showError);
       if (data) {
         this.setState({ companies: data.company });
+      } else {
+        this.showError('Unable to load data')
       }
     }
   
     async createJob(job) {
       const query = `mutation addNewJob($job: JobInput!) { jobAdd(job: $job) {title, _id}} `;
   
-      const data = await graphQLFetch(query, { job });
+      const data = await graphQLFetch(query, { job }, this.showError);
       if (data) {
+        this.showSuccess('Job created successfully');
         this.loadData();
+      } else {
+        this.showError('Unable to create job')
       }
     }
 
@@ -112,12 +141,16 @@ export default class JobList extends React.Component {
 
       const data = await graphQLFetch(query, { _id });
       if (data) {
+        this.showSuccess('Job deleted successfully');
         this.props.history.push("/jobs")
         this.loadData();
+      } else {
+        this.showError('Unable to delete job')
       }
     }
   
     render() {
+      const { toastVisible, toastMessage, toastType } = this.state;
       return (
         <React.Fragment>
           <Panel>
@@ -127,6 +160,13 @@ export default class JobList extends React.Component {
             <Panel.Body collapsible>
               <JobsFilter comp={this.state.companies} />
             </Panel.Body>
+            <Toast
+              showing={toastVisible}
+              onDismiss={this.dismissToast}
+              bsStyle={toastType}
+            >
+            {toastMessage}
+            </Toast>
           </Panel>
           <JobTable jobs={this.state.jobs} />
           <hr />
@@ -138,7 +178,6 @@ export default class JobList extends React.Component {
               <hr />
             </React.Fragment>
           )} />
-          {/* <SkillList /> */}
         </React.Fragment>
       );
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Col, Glyphicon, Grid, OverlayTrigger, Panel, Row, Tooltip } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Link } from 'react-router-dom';
+import Toast from '../toast.jsx'
 
 import graphQLFetch from '../../utils/graphqlFetch';
 
@@ -10,13 +10,35 @@ export default class JobDetails extends React.Component {
     super(props);
     this.state = {
       details: {},
-        id : this.props.match.params.id
+        id : this.props.match.params.id,
+        toastVisible: false,
+        toastMessage: ' ',
+        toastType: 'success',
     };
     this.deleteJob = this.deleteJob.bind(this)
+    this.showSuccess = this.showSuccess.bind(this);
+    this.showError = this.showError.bind(this);
+    this.dismissToast = this.dismissToast.bind(this);
   }
 
   componentDidMount() {
     this.loadDetails(this.state.id);
+  }
+
+  showSuccess(message) {
+    this.setState({
+      toastVisible: true, toastMessage: message, toastType: 'success',
+    });
+  }
+
+  showError(message) {
+    this.setState({
+      toastVisible: true, toastMessage: message, toastType: 'danger',
+    });
+  }
+  
+  dismissToast() {
+    this.setState({ toastVisible: false });
   }
 
   async loadDetails(_id) {
@@ -39,9 +61,11 @@ export default class JobDetails extends React.Component {
       }
     }`;
 
-    const data = await graphQLFetch(query, { _id });
+    const data = await graphQLFetch(query, { _id }, this.showError);
     if (data) {
       this.setState({ details: data.job });
+    } else {
+      this.showError('Unable to load data')
     }
   }
 
@@ -52,9 +76,11 @@ export default class JobDetails extends React.Component {
     }
     `
 
-    const data = await graphQLFetch(query, { _id });
+    const data = await graphQLFetch(query, { _id }, this.showError);
     if (data) {
       this.props.history.push("/jobs")
+    } else {
+      this.showError('Unable to delete')
     }
   }
 
@@ -65,6 +91,7 @@ export default class JobDetails extends React.Component {
         <Tooltip id="show-tooltip" placement="top">{text}</Tooltip>
       )
     }
+    const { toastVisible, toastMessage, toastType } = this.state;
     return (
       <div>
         <Panel>
@@ -177,6 +204,13 @@ export default class JobDetails extends React.Component {
             </Row>
           </Grid>
         )}
+          <Toast
+            showing={toastVisible}
+            onDismiss={this.dismissToast}
+            bsStyle={toastType}
+          >
+            {toastMessage}
+          </Toast>
         </Panel>
       </div>
     );

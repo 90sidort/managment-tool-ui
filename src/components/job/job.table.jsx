@@ -1,8 +1,5 @@
 import React from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
-import {
-  Button, Glyphicon, Tooltip, OverlayTrigger, Table,
-} from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
 import JobRow from "./job.row.jsx"
 

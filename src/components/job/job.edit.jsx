@@ -16,6 +16,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch';
 import editValidation from '../../utils/editValidation'
+import Toast from '../toast.jsx'
 
 export default class JobDetails extends React.Component {
   constructor(props) {
@@ -39,11 +40,17 @@ export default class JobDetails extends React.Component {
         jobId: null,
         skills: [],
         availSkills: {},
-        errors: {}
+        errors: {},
+        toastVisible: false,
+        toastMessage: ' ',
+        toastType: 'success',
     };
     this.onCompanySelectedHandler = this.onCompanySelectedHandler.bind(this);
     this.onValueChange = this.onValueChange.bind(this)
     this.onSubmitHandle = this.onSubmitHandle.bind(this)
+    this.showSuccess = this.showSuccess.bind(this);
+    this.showError = this.showError.bind(this);
+    this.dismissToast = this.dismissToast.bind(this);
   } 
 
   componentDidMount() {
@@ -72,6 +79,22 @@ export default class JobDetails extends React.Component {
     this.loadRep(e.target.value);
     this.loadLoc(e.target.value);
     this.setState({ companyValue: e.target.value });
+  }
+
+  showSuccess(message) {
+    this.setState({
+      toastVisible: true, toastMessage: message, toastType: 'success',
+    });
+  }
+
+  showError(message) {
+    this.setState({
+      toastVisible: true, toastMessage: message, toastType: 'danger',
+    });
+  }
+  
+  dismissToast() {
+    this.setState({ toastVisible: false });
   }
 
   onValueChange(e) {
@@ -159,9 +182,9 @@ export default class JobDetails extends React.Component {
         }
       }
     `
-    const data = await graphQLFetch(query, {_id, changes});
-    if (data) {
-      console.log('działa kurła');
+    const data = await graphQLFetch(query, {_id, changes}, this.showError);
+    if (!data) {
+      this.showError("Unable to save changes")
     }
   }
 
@@ -173,9 +196,11 @@ export default class JobDetails extends React.Component {
         name
       }
     }`;
-    const data = await graphQLFetch(query);
+    const data = await graphQLFetch(query, {}, this.showError);
     if (data) {
       this.setState({ companies: data.company })
+    } else {
+      this.showError("Unable to load data")
     }
   }
   async loadSkills() {
@@ -186,9 +211,11 @@ export default class JobDetails extends React.Component {
         name
       }
     }`
-    const data = await graphQLFetch(query);
+    const data = await graphQLFetch(query, {}, this.showError);
     if (data) {
       this.setState({ availSkills: data.skill })
+    } else {
+      this.showError("Unable to load data")
     }
   }
 
@@ -203,9 +230,11 @@ export default class JobDetails extends React.Component {
         name
       }
     }`;
-    const data = await graphQLFetch(query, { cid });
+    const data = await graphQLFetch(query, { cid }, this.showError);
     if (data) {
       this.setState({ representatives: data.representative });
+    } else {
+      this.showError("Unable to load data")
     }
   }
 
@@ -221,9 +250,11 @@ export default class JobDetails extends React.Component {
         postcode
       }
     }`;
-    const data = await graphQLFetch(query, { cid });
+    const data = await graphQLFetch(query, { cid }, this.showError);
     if (data) {
       this.setState({ locations: data.location });
+    } else {
+      this.showError("Unable to load data")
     }
   }
 
@@ -247,7 +278,7 @@ export default class JobDetails extends React.Component {
       }
     }`;
 
-    const data = await graphQLFetch(query, { _id });
+    const data = await graphQLFetch(query, { _id }, this.showError);
     if (data) {
       const setData = data.job[0]
       this.setState({jobId: setData._id})
@@ -263,10 +294,13 @@ export default class JobDetails extends React.Component {
       this.setState({start: setData.start})
       this.setState({end: setData.end})
       this.setState({skills: setData.skills.map(function(skill) { return skill._id; })})
+    } else {
+      this.showError("Unable to load data")
     }
   }
 
   render() {
+    const { toastVisible, toastMessage, toastType } = this.state;
     const {
       companies,
       companyValue,
@@ -524,6 +558,13 @@ export default class JobDetails extends React.Component {
         <p>Job with this id not found.</p>
       )  
     }
+    <Toast
+      showing={toastVisible}
+      onDismiss={this.dismissToast}
+      bsStyle={toastType}
+    >
+      {toastMessage}
+    </Toast>
     </div>
   )}
 }

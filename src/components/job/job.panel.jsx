@@ -1,23 +1,28 @@
 import React from 'react'
-import { Button, Glyphicon, OverlayTrigger, Tooltip, Grid, Row, Col, ListGroup, ListGroupItem, Panel } from 'react-bootstrap'
+import {
+  Button,
+  Glyphicon,
+  OverlayTrigger,
+  Tooltip,
+  Row,
+  Col,
+  ListGroup,
+  ListGroupItem,
+  Panel
+} from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { NavLink } from 'react-router-dom'
-import Toast from '../toast.jsx'
+import withToast from '../toast.wrapper.jsx';
 
 import graphQLFetch from '../../utils/graphqlFetch'
+import { getJobQuery } from '../../utils/queries/job.queries.js'
 
-export default class JobPanel extends React.Component {
+class JobPanel extends React.Component {
     constructor(){
       super()
       this.state = {
           job: {},
-          toastVisible: false,
-          toastMessage: ' ',
-          toastType: 'success',
       }
-      this.showSuccess = this.showSuccess.bind(this);
-      this.showError = this.showError.bind(this);
-      this.dismissToast = this.dismissToast.bind(this);
     }
 
     componentDidMount() {
@@ -32,62 +37,26 @@ export default class JobPanel extends React.Component {
       }
     }
 
-    showSuccess(message) {
-      this.setState({
-        toastVisible: true, toastMessage: message, toastType: 'success',
-      });
-    }
-
-    showError(message) {
-      this.setState({
-        toastVisible: true, toastMessage: message, toastType: 'danger',
-      });
-    }
-    
-    dismissToast() {
-      this.setState({ toastVisible: false });
-    }
-
     async loadData() {
       const _id = this.props.match.params.id
-      const query = `
-      query getJob($_id: ID, $currency: String, $status: String) {
-          job(_id: $_id, currency: $currency, status: $status) {
-            _id
-            description
-            personel
-            rate
-            currency
-            skills {_id, name}
-            agent { name _id cid email phone}
-            representative { name _id cid email phone}
-            location { country address postcode city cid _id}
-            title
-            company {name}
-            status
-            start
-            end
-            created
-          }
-        }`;
-        const data = await graphQLFetch(query, { _id }, this.showError);
+      const { showError } = this.props
+      const query = getJobQuery;
+        const data = await graphQLFetch(query, { _id }, showError);
         if (data) {
           this.setState({ job: data.job[0] });
         } else {
-          this.showError('Unable to load data')
+          showError('Unable to load data')
           this.setState({ job: {} });
         }
     }
 
   render(){
     const data = this.state.job
-    const { toastVisible, toastMessage, toastType } = this.state;
     const showTooltip = function(text) {
       return (
         <Tooltip id="show-tooltip" placement="top">{text}</Tooltip>
       )
     }
-    console.log(123, data);
     return (
       <Panel>
           <Panel.Heading>
@@ -146,15 +115,10 @@ export default class JobPanel extends React.Component {
               </ListGroup>
             </Col>
           </Row>
-        <Toast
-          showing={toastVisible}
-          onDismiss={this.dismissToast}
-          bsStyle={toastType}
-        >
-          {toastMessage}
-        </Toast>
       </Panel>
-      
     )
   }
 }
+
+const JobPanelWithToast = withToast(JobPanel);
+export default JobPanelWithToast;

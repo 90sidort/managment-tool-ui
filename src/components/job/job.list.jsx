@@ -7,9 +7,15 @@ import JobsFilter from "./job.filter.jsx"
 import JobTable from "./job.table.jsx"
 import JobAdd from "./job.add.jsx"
 import JobPanel from './job.panel.jsx';
-import Toast from '../toast.jsx'
+import withToast from '../toast.wrapper.jsx';
+import {
+  createJobQuery,
+  deleteJobQuery,
+  jobListQuery,
+  loadComapnyQuery
+} from '../../utils/queries/job.queries';
 
-export default class JobList extends React.Component {
+class JobList extends React.Component {
     constructor() {
       super();
       this.state = {
@@ -20,10 +26,7 @@ export default class JobList extends React.Component {
         toastType: 'success',
       };
       this.createJob = this.createJob.bind(this);
-      this.deleteJob = this.deleteJob.bind(this)
-      this.showSuccess = this.showSuccess.bind(this);
-      this.showError = this.showError.bind(this);
-      this.dismissToast = this.dismissToast.bind(this);
+      this.deleteJob = this.deleteJob.bind(this);
     }
   
     componentDidMount() {
@@ -38,25 +41,9 @@ export default class JobList extends React.Component {
         this.loadData();
       }
     }
-
-    showSuccess(message) {
-      this.setState({
-        toastVisible: true, toastMessage: message, toastType: 'success',
-      });
-    }
-
-    showError(message) {
-      this.setState({
-        toastVisible: true, toastMessage: message, toastType: 'danger',
-      });
-    }
-    
-    dismissToast() {
-      this.setState({ toastVisible: false });
-    }
   
     async loadData() {
-      const { location: { search } } = this.props;
+      const { location: { search }, showError } = this.props;
       const params = new URLSearchParams(search);
       const vars = {};
 
@@ -68,89 +55,54 @@ export default class JobList extends React.Component {
       const personMax = parseInt(params.get('personMax'), 10);
       if (!Number.isNaN(personMax)) vars.personMax = personMax;
 
-      const query = `query getJob(
-        $_id: ID,
-        $title: String,
-        $currency: String,
-        $status: String,
-        $company: ID,
-        $personMin: Int,
-        $personMax: Int) {
-        job(
-          _id: $_id,
-          title: $title,
-          currency: $currency,
-          status: $status,
-          company: $company,
-          personMin: $personMin,
-          personMax: $personMax
-        ) {
-            _id
-            personel
-            representative { name _id cid email phone}
-            location { country address postcode city cid _id}
-            title
-            company {name}
-            status
-            start
-            end
-        }
-      }
-      `;
-      const data = await graphQLFetch(query, vars, this.showError);
+      const query = jobListQuery;
+      const data = await graphQLFetch(query, vars, showError);
         if (data) {
           this.setState({ jobs: data.job });
         } else {
-          this.showError('Unable to load data')
+          showError('Unable to load data')
         }
     }
   
     async loadCompany() {
-      const query = `query {
-        company {
-          _id
-          name
-        }
-      }`;
-      const data = await graphQLFetch(query, {}, this.showError);
+      const { showError } = this.props
+      const query = loadComapnyQuery;
+      const data = await graphQLFetch(query, {}, showError);
       if (data) {
         this.setState({ companies: data.company });
       } else {
-        this.showError('Unable to load data')
+        showError('Unable to load data')
       }
     }
   
     async createJob(job) {
-      const query = `mutation addNewJob($job: JobInput!) { jobAdd(job: $job) {title, _id}} `;
+      const { showError, showSuccess } = this.props
+      const query = createJobQuery;
   
-      const data = await graphQLFetch(query, { job }, this.showError);
+      const data = await graphQLFetch(query, { job }, showError);
       if (data) {
-        this.showSuccess('Job created successfully');
+        showSuccess('Job created successfully');
         this.loadData();
       } else {
-        this.showError('Unable to create job')
+        showError('Unable to create job')
       }
     }
 
     async deleteJob(_id) {
-      const query = `
-      mutation deleteJob($_id: ID!) {
-        jobDelete(_id: $_id)
-      }
-      `
+      const { showError, showSuccess } = this.props
+      const query = deleteJobQuery;
 
-      const data = await graphQLFetch(query, { _id });
+      const data = await graphQLFetch(query, { _id }, showError);
       if (data) {
-        this.showSuccess('Job deleted successfully');
+        showSuccess('Job deleted successfully');
         this.props.history.push("/jobs")
         this.loadData();
       } else {
-        this.showError('Unable to delete job')
+        showError('Unable to delete job')
       }
     }
   
     render() {
-      const { toastVisible, toastMessage, toastType } = this.state;
       return (
         <React.Fragment>
           <Panel>
@@ -160,13 +112,6 @@ export default class JobList extends React.Component {
             <Panel.Body collapsible>
               <JobsFilter comp={this.state.companies} />
             </Panel.Body>
-            <Toast
-              showing={toastVisible}
-              onDismiss={this.dismissToast}
-              bsStyle={toastType}
-            >
-            {toastMessage}
-            </Toast>
           </Panel>
           <JobTable jobs={this.state.jobs} />
           <hr />
@@ -182,3 +127,6 @@ export default class JobList extends React.Component {
       );
     }
   }
+
+const JobListWithToast = withToast(JobList);
+export default JobListWithToast;

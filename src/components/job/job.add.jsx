@@ -11,10 +11,12 @@ import {
 } from 'react-bootstrap';
 
 import addValidation from '../../utils/addValidation';
-import Toast from '../toast.jsx'
+import withToast from '../toast.wrapper.jsx';
 import graphQLFetch from '../../utils/graphqlFetch'
+import { loadLoc, loadReps } from '../../utils/queries/job.queries';
+import { createOptions } from "../../utils/createOptions"
 
-export default class JobAdd extends React.Component {
+class JobAdd extends React.Component {
     constructor() {
       super();
       this.state = {
@@ -22,113 +24,32 @@ export default class JobAdd extends React.Component {
         representatives: [],
         locations: [],
         errors: {},
-        toastVisible: false,
-        toastMessage: ' ',
-        toastType: 'success',
       };
       this.onSubmitHandler = this.onSubmitHandler.bind(this);
       this.onCompanySelectedHandler = this.onCompanySelectedHandler.bind(this);
       this.closeAddPanel = this.closeAddPanel.bind(this)
-      this.showSuccess = this.showSuccess.bind(this);
-      this.showError = this.showError.bind(this);
-      this.dismissToast = this.dismissToast.bind(this);
-    }
-  
-    showSuccess(message) {
-      this.setState({
-        toastVisible: true, toastMessage: message, toastType: 'success',
-      });
-    }
-
-    showError(message) {
-      this.setState({
-        toastVisible: true, toastMessage: message, toastType: 'danger',
-      });
-    }
-    
-    dismissToast() {
-      this.setState({ toastVisible: false });
     }
 
     async loadRep(cid) {
-      const query = `query getRep($cid: ID) {
-        representative(cid: $cid) {
-          _id
-          cid
-          email
-          phone
-          name
-        }
-      }`;
-      const data = await graphQLFetch(query, { cid }, this.showError);
+      const { showError } = this.props
+      const query = loadReps;
+      const data = await graphQLFetch(query, { cid }, showError);
       if (data) {
         this.setState({ representatives: data.representative });
       } else {
-        this.showError('Unable to load data')
+        showError('Unable to load data')
       }
     }
   
     async loadLoc(cid) {
-      const query = `query getLocations($cid: ID) {
-        location(cid: $cid) {
-          _id
-          cid
-          city
-          country
-          address
-          postcode
-        }
-      }`;
-      const data = await graphQLFetch(query, { cid }, this.showError);
+      const { showError } = this.props
+      const query = loadLoc;
+      const data = await graphQLFetch(query, { cid }, showError);
       if (data) {
         this.setState({ locations: data.location });
       } else {
-        this.showError('Unable to load data')
+        showError('Unable to load data')
       }
-    }
-  
-    createRepItems() {
-      const options = [];
-      const reps = this.state.representatives;
-      for (let i = 0; i < reps.length; i++) {
-        options.push(
-          <option key={i} value={reps[i]._id}>
-            {reps[i].name}, {reps[i].email}
-          </option>
-        );
-      }
-      return options;
-    }
-  
-    createLocItems() {
-      const options = [];
-      const locs = this.state.locations;
-      for (let i = 0; i < locs.length; i++) {
-        options.push(
-          <option key={i} value={locs[i]._id}>
-            {locs[i].city}, {locs[i].country}, {locs[i].address}, {locs[i].postcode}
-          </option>
-        );
-      }
-      return options;
-    }
-  
-    createCompItems() {
-      const options = [];
-      const comps = this.props.comp;
-      for (let i = 0; i < comps.length; i++) {
-        options.push(
-          <option key={i} value={comps[i]._id}>
-            {comps[i].name}
-          </option>
-        );
-      }
-      options.push(
-        <option key={-1} value={-1} disabled>
-          Select company
-        </option>
-      );
-      return options;
     }
   
     onCompanySelectedHandler(e) {
@@ -183,8 +104,8 @@ export default class JobAdd extends React.Component {
     }
   
     render() {
-      const errors = this.state.errors
-      const { toastVisible, toastMessage, toastType } = this.state;
+      const companies = this.props.comp
+      const { representatives, errors, locations } = this.state
       return (
         <React.Fragment>
           <div>
@@ -198,7 +119,7 @@ export default class JobAdd extends React.Component {
               id="company"
               onChange={this.onCompanySelectedHandler}
             >
-              {this.createCompItems()}
+              {createOptions("companies", companies)}
               </FormControl>
               {errors.company && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("company")}>{errors.company}</Alert>}
               </Col>
@@ -252,7 +173,7 @@ export default class JobAdd extends React.Component {
                       componentClass="select"
                       name="representative"
                     >
-                      {this.createRepItems()}
+                      {createOptions("rep", representatives)}
                   </FormControl>
                 </FormGroup>
                 {errors.representative && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("representative")}>{errors.representative}</Alert>}
@@ -264,7 +185,7 @@ export default class JobAdd extends React.Component {
                       componentClass="select"
                       name="location"
                     >
-                      {this.createLocItems()}
+                      {createOptions("loc", locations)}
                   </FormControl>
                 </FormGroup>
                 {errors.location && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("location")}>{errors.location}</Alert>}
@@ -302,14 +223,10 @@ export default class JobAdd extends React.Component {
               </Row>
             </Form>
           )}
-        <Toast
-          showing={toastVisible}
-          onDismiss={this.dismissToast}
-          bsStyle={toastType}
-        >
-          {toastMessage}
-        </Toast>
         </React.Fragment>
       );
     }
   }
+
+const JobAddWithToast = withToast(JobAdd);
+export default JobAddWithToast;

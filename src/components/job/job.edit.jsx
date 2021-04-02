@@ -16,9 +16,12 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch';
 import editValidation from '../../utils/editValidation'
-import Toast from '../toast.jsx'
+import { createOptions } from "../../utils/createOptions"
+import { getJobQuery, loadComapnyQuery, loadLoc, loadReps, updateJob } from '../../utils/queries/job.queries';
+import { loadSkills } from '../../utils/queries/skill.queries';
+import withToast from '../toast.wrapper.jsx';
 
-export default class JobDetails extends React.Component {
+class JobEdit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,16 +44,10 @@ export default class JobDetails extends React.Component {
         skills: [],
         availSkills: {},
         errors: {},
-        toastVisible: false,
-        toastMessage: ' ',
-        toastType: 'success',
     };
     this.onCompanySelectedHandler = this.onCompanySelectedHandler.bind(this);
     this.onValueChange = this.onValueChange.bind(this)
     this.onSubmitHandle = this.onSubmitHandle.bind(this)
-    this.showSuccess = this.showSuccess.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
   } 
 
   componentDidMount() {
@@ -79,22 +76,6 @@ export default class JobDetails extends React.Component {
     this.loadRep(e.target.value);
     this.loadLoc(e.target.value);
     this.setState({ companyValue: e.target.value });
-  }
-
-  showSuccess(message) {
-    this.setState({
-      toastVisible: true, toastMessage: message, toastType: 'success',
-    });
-  }
-
-  showError(message) {
-    this.setState({
-      toastVisible: true, toastMessage: message, toastType: 'danger',
-    });
-  }
-  
-  dismissToast() {
-    this.setState({ toastVisible: false });
   }
 
   onValueChange(e) {
@@ -149,136 +130,63 @@ export default class JobDetails extends React.Component {
     }
   }
 
-  createOptions(name, element) {
-    const options = [];
-    const optionArr = element
-    for (let i = 0; i < optionArr.length; i++) {
-      options.push(
-        <option key={i} value={optionArr[i]._id}>
-          {name === 'companies' && `${optionArr[i].name}`}
-          {name === "skills" && `${optionArr[i].name}`}
-          {name === 'rep' && `${optionArr[i].name}, ${optionArr[i].email}`}
-          {name === 'loc' && `${optionArr[i].city}, ${optionArr[i].country}, ${optionArr[i].address}, ${optionArr[i].postcode}`}
-        </option>
-      );
-    }
-    if (name === "companies") {
-      options.push(
-        <option key={-1} value={-1} disabled>
-          Select company
-        </option>
-      );
-    }
-    return options;
-  }
-
   async updateData(_id, changes) {
-    const query = `
-      mutation updateJob($_id: ID, $changes: JobInput!){
-        updateJob(_id: $_id, changes: $changes) {
-        title
-        rate
-        currency
-        }
-      }
-    `
-    const data = await graphQLFetch(query, {_id, changes}, this.showError);
+    const { showError } = this.props
+    const query = updateJob;
+    const data = await graphQLFetch(query, {_id, changes}, showError);
     if (!data) {
-      this.showError("Unable to save changes")
+      showError("Unable to save changes")
     }
   }
 
   async loadCompany() {
-    const query = `
-    query {
-      company {
-        _id
-        name
-      }
-    }`;
-    const data = await graphQLFetch(query, {}, this.showError);
+    const { showError } = this.props
+    const query = loadComapnyQuery;
+    const data = await graphQLFetch(query, {}, showError);
     if (data) {
       this.setState({ companies: data.company })
     } else {
-      this.showError("Unable to load data")
+      showError("Unable to load data")
     }
   }
   async loadSkills() {
-    const query = `
-    query getSkills {
-      skill {
-        _id
-        name
-      }
-    }`
-    const data = await graphQLFetch(query, {}, this.showError);
+    const { showError } = this.props
+    const query = loadSkills;
+    const data = await graphQLFetch(query, {}, showError);
     if (data) {
       this.setState({ availSkills: data.skill })
     } else {
-      this.showError("Unable to load data")
+      showError("Unable to load data")
     }
   }
 
   async loadRep(cid) {
-    const query = `
-    query getRep($cid: ID) {
-      representative(cid: $cid) {
-        _id
-        cid
-        email
-        phone
-        name
-      }
-    }`;
-    const data = await graphQLFetch(query, { cid }, this.showError);
+    const { showError } = this.props
+    const query = loadReps;
+    const data = await graphQLFetch(query, { cid }, showError);
     if (data) {
       this.setState({ representatives: data.representative });
     } else {
-      this.showError("Unable to load data")
+      showError("Unable to load data")
     }
   }
 
   async loadLoc(cid) {
-    const query = `
-    query getLocations($cid: ID) {
-      location(cid: $cid) {
-        _id
-        cid
-        city
-        country
-        address
-        postcode
-      }
-    }`;
-    const data = await graphQLFetch(query, { cid }, this.showError);
+    const { showError } = this.props
+    const query = loadLoc;
+    const data = await graphQLFetch(query, { cid }, showError);
     if (data) {
       this.setState({ locations: data.location });
     } else {
-      this.showError("Unable to load data")
+      showError("Unable to load data")
     }
   }
 
   async loadDetails(_id) {
-    const query = `query getJob($_id: ID) {
-      job(_id: $_id) {
-        _id
-        personel
-        rate
-        currency
-        description
-        skills {_id}
-        agent { name _id cid email phone}
-        representative { name _id cid email phone}
-        location { country address postcode city cid _id}
-        title
-        company {_id name}
-        status
-        start
-        end
-      }
-    }`;
+    const { showError } = this.props
+    const query = getJobQuery;
 
-    const data = await graphQLFetch(query, { _id }, this.showError);
+    const data = await graphQLFetch(query, { _id }, showError);
     if (data) {
       const setData = data.job[0]
       this.setState({jobId: setData._id})
@@ -295,12 +203,11 @@ export default class JobDetails extends React.Component {
       this.setState({end: setData.end})
       this.setState({skills: setData.skills.map(function(skill) { return skill._id; })})
     } else {
-      this.showError("Unable to load data")
+      showError("Unable to load data")
     }
   }
 
   render() {
-    const { toastVisible, toastMessage, toastType } = this.state;
     const {
       companies,
       companyValue,
@@ -359,7 +266,7 @@ export default class JobDetails extends React.Component {
                   value={companyValue}
                   onChange={this.onCompanySelectedHandler}
                 >
-                  {this.createOptions("companies", companies)}
+                  {createOptions("companies", companies)}
                 </FormControl>
                 {errors.company && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("company")}>{errors.company}</Alert>}
               </Col>
@@ -376,7 +283,7 @@ export default class JobDetails extends React.Component {
                     value={repValue}
                     onChange={this.onValueChange}
                   >
-                    {this.createOptions("rep", representatives)}
+                    {createOptions("rep", representatives)}
                   </FormControl>
                   {errors.representative && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("representative")}>{errors.representative}</Alert>}
                 </Col>
@@ -393,7 +300,7 @@ export default class JobDetails extends React.Component {
                     value={locValue}
                     onChange={this.onValueChange}
                   >
-                    {this.createOptions("loc", locations)}
+                    {createOptions("loc", locations)}
                   </FormControl>
                   {errors.location && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("location")}>{errors.location}</Alert>}
                 </Col>
@@ -487,7 +394,7 @@ export default class JobDetails extends React.Component {
                   multiple
                   onChange={this.onValueChange}
                 >
-                  {this.createOptions("skills", availSkills)}
+                  {createOptions("skills", availSkills)}
                 </FormControl>
                 {errors.skills && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("skills")}>{errors.skills}</Alert>}
               </Col>
@@ -558,13 +465,9 @@ export default class JobDetails extends React.Component {
         <p>Job with this id not found.</p>
       )  
     }
-    <Toast
-      showing={toastVisible}
-      onDismiss={this.dismissToast}
-      bsStyle={toastType}
-    >
-      {toastMessage}
-    </Toast>
     </div>
   )}
 }
+
+const JobEditWithToast = withToast(JobEdit);
+export default JobEditWithToast;

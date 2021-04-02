@@ -92,25 +92,4 @@ export const getJobQuery = `query getJob($_id: ID) {
     end
     created
   }
-}`
-
-// `
-//       query getJob($_id: ID, $currency: String, $status: String) {
-//           job(_id: $_id, currency: $currency, status: $status) {
-//             _id
-//             description
-//             personel
-//             rate
-//             currency
-//             skills {_id, name}
-//             agent { name _id cid email phone}
-//             representative { name _id cid email phone}
-//             location { country address postcode city cid _id}
-//             title
-//             company {_id name}
-//             status
-//             start
-//             end
-//             created
-//           }
-//         }`
+}`;

@@ -1,11 +1,21 @@
 import React from 'react';
-import { Button, Col, Glyphicon, Grid, OverlayTrigger, Panel, Row, Tooltip } from 'react-bootstrap';
+import {
+  Button,
+  Col,
+  Glyphicon,
+  Grid,
+  OverlayTrigger,
+  Panel,
+  Row,
+  Tooltip
+} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import Toast from '../toast.jsx'
 
+import withToast from '../toast.wrapper.jsx'
 import graphQLFetch from '../../utils/graphqlFetch';
+import { deleteJobQuery, getJobQuery } from '../../utils/queries/job.queries.js';
 
-export default class JobDetails extends React.Component {
+class JobDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,71 +26,31 @@ export default class JobDetails extends React.Component {
         toastType: 'success',
     };
     this.deleteJob = this.deleteJob.bind(this)
-    this.showSuccess = this.showSuccess.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
   }
 
   componentDidMount() {
     this.loadDetails(this.state.id);
   }
 
-  showSuccess(message) {
-    this.setState({
-      toastVisible: true, toastMessage: message, toastType: 'success',
-    });
-  }
-
-  showError(message) {
-    this.setState({
-      toastVisible: true, toastMessage: message, toastType: 'danger',
-    });
-  }
-  
-  dismissToast() {
-    this.setState({ toastVisible: false });
-  }
-
   async loadDetails(_id) {
-    const query = `query getJob($_id: ID) {
-      job(_id: $_id) {
-        _id
-        personel
-        rate
-        currency
-        description
-        skills {_id, name}
-        agent { name _id cid email phone}
-        representative { name _id cid email phone}
-        location { country address postcode city cid _id}
-        title
-        company {name}
-        status
-        start
-        end
-      }
-    }`;
-
-    const data = await graphQLFetch(query, { _id }, this.showError);
+    const { showError } = this.props
+    const query = getJobQuery;
+    const data = await graphQLFetch(query, { _id }, showError);
     if (data) {
       this.setState({ details: data.job });
     } else {
-      this.showError('Unable to load data')
+      showError('Unable to load data')
     }
   }
 
   async deleteJob(_id) {
-    const query = `
-    mutation deleteJob($_id: ID!) {
-      jobDelete(_id: $_id)
-    }
-    `
-
-    const data = await graphQLFetch(query, { _id }, this.showError);
+    const { showError } = this.props
+    const query = deleteJobQuery;
+    const data = await graphQLFetch(query, { _id }, showError);
     if (data) {
       this.props.history.push("/jobs")
     } else {
-      this.showError('Unable to delete')
+      showError('Unable to delete')
     }
   }
 
@@ -91,21 +61,20 @@ export default class JobDetails extends React.Component {
         <Tooltip id="show-tooltip" placement="top">{text}</Tooltip>
       )
     }
-    const { toastVisible, toastMessage, toastType } = this.state;
     return (
       <div>
         <Panel>
         <Panel.Heading>
           <LinkContainer to={`/edit/${this.state.id}`}>
             <OverlayTrigger delayShow={1000} overlay={showTooltip("Edit job")}>
-              <Button bsStyle="info" bsSize="small">
+              <Button bsStyle="success" bsSize="small">
                 <Glyphicon glyph="glyphicon glyphicon-pencil" />
               </Button>
             </OverlayTrigger>
           </LinkContainer>
           <LinkContainer to={`/jobs/${this.state.id}`}>
             <OverlayTrigger delayShow={1000} overlay={showTooltip("Panel view")}>
-              <Button bsStyle="success" bsSize="small">
+              <Button bsStyle="info" bsSize="small">
                 <Glyphicon glyph="glyphicon glyphicon-resize-small" />
               </Button>
             </OverlayTrigger>
@@ -204,16 +173,11 @@ export default class JobDetails extends React.Component {
             </Row>
           </Grid>
         )}
-          <Toast
-            showing={toastVisible}
-            onDismiss={this.dismissToast}
-            bsStyle={toastType}
-          >
-            {toastMessage}
-          </Toast>
         </Panel>
       </div>
     );
   }
 }
 
+const JobDetailsWithToast = withToast(JobDetails);
+export default JobDetailsWithToast;

@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 
 const JobRow = withRouter(({ job, location: { search } }) => {
   const selectLocation = { pathname: `/jobs/${job._id}`, search };
-  console.log(search, job);
   return (
       <LinkContainer to={selectLocation}>
         <tr>

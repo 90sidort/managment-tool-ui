@@ -65,7 +65,6 @@ class JobAdd extends React.Component {
     dismissValidation(name) {
       const newErrors = {...this.state.errors}
       delete newErrors[name]
-      console.log(newErrors);
       this.setState({ errors: newErrors });
     }
 

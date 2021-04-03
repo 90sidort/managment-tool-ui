@@ -5,18 +5,26 @@ export const jobListQuery = `query getJob(
   $status: String,
   $company: ID,
   $personMin: Int,
-  $personMax: Int) {
+  $personMax: Int,
+	$page: Int) {
   job(
     _id: $_id,
     title: $title,
     currency: $currency,
     status: $status,
     company: $company,
-    personMin: $personMin,
-    personMax: $personMax
+		personMin: $personMin,
+  	personMax: $personMax,
+    page: $page
   ) {
+    	jobs {
       _id
       personel
+      rate
+      currency
+      description
+      skills {name}
+      agent {name}
       representative { name _id cid email phone}
       location { country address postcode city cid _id}
       title
@@ -24,6 +32,9 @@ export const jobListQuery = `query getJob(
       status
       start
       end
+      created
+      }
+    pages
   }
 }`;
 
@@ -76,21 +87,23 @@ export const updateJob = `
 
 export const getJobQuery = `query getJob($_id: ID) {
   job(_id: $_id) {
-    _id
-    personel
-    rate
-    currency
-    description
-    skills {_id name}
-    agent { name _id cid email phone}
-    representative { name _id cid email phone}
-    location { country address postcode city cid _id}
-    title
-    company {_id name}
-    status
-    start
-    end
-    created
+    jobs {
+      _id
+      personel
+      rate
+      currency
+      description
+      skills {_id name}
+      agent { name _id cid email phone}
+      representative { name _id cid email phone}
+      location { country address postcode city cid _id}
+      title
+      company {_id name}
+      status
+      start
+      end
+      created
+    }
   }
 }`;
 

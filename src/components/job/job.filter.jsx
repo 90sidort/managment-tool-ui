@@ -48,7 +48,6 @@ class JobsFilter extends React.Component {
   }
 
   onCompanySelectedHandler(e) {
-    console.log(e.target.value);
     this.setState({ company: e.target.value, changed: true });
   }
 

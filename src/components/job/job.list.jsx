@@ -58,7 +58,7 @@ class JobList extends React.Component {
       const query = jobListQuery;
       const data = await graphQLFetch(query, vars, showError);
         if (data) {
-          this.setState({ jobs: data.job });
+          this.setState({ jobs: data.job.jobs });
         } else {
           showError('Unable to load data')
         }

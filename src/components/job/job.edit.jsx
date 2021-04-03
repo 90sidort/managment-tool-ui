@@ -98,7 +98,6 @@ class JobEdit extends React.Component {
   dismissValidation(name) {
     const newErrors = {...this.state.errors}
     delete newErrors[name]
-    console.log(newErrors);
     this.setState({ errors: newErrors });
   }
 
@@ -188,7 +187,7 @@ class JobEdit extends React.Component {
 
     const data = await graphQLFetch(query, { _id }, showError);
     if (data) {
-      const setData = data.job[0]
+      const setData = data.job.jobs[0]
       this.setState({jobId: setData._id})
       this.setState({companyValue: setData.company._id})
       this.setState({repValue: setData.representative._id})
@@ -225,7 +224,6 @@ class JobEdit extends React.Component {
       status,
       errors
     } = this.state 
-    console.log(this.state);
     const start = this.state.start.toISOString().split("T")[0]
     const end = this.state.end.toISOString().split("T")[0]
     const showTooltip = function(text) {

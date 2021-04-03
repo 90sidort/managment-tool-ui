@@ -21,7 +21,6 @@ class IssueReport extends React.Component {
     const query = subject === 'status' ? getStatusReport : '';
     const data = await graphQLFetch(query, {}, showError);
     if (data) {
-      console.log(data);
       this.setState({ stats: data.jobCount[0] });
     } else {
       showError('Unable to load data')

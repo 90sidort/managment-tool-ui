@@ -15,7 +15,7 @@ import { NavLink } from 'react-router-dom'
 import withToast from '../toast.wrapper.jsx';
 
 import graphQLFetch from '../../utils/graphqlFetch'
-import { getJobQuery } from '../../utils/queries/job.queries.js'
+import { jobListQuery } from '../../utils/queries/job.queries.js'
 
 class JobPanel extends React.Component {
     constructor(){
@@ -40,10 +40,10 @@ class JobPanel extends React.Component {
     async loadData() {
       const _id = this.props.match.params.id
       const { showError } = this.props
-      const query = getJobQuery;
+      const query = jobListQuery;
         const data = await graphQLFetch(query, { _id }, showError);
         if (data) {
-          this.setState({ job: data.job[0] });
+          this.setState({ job: data.job.jobs[0] });
         } else {
           showError('Unable to load data')
           this.setState({ job: {} });

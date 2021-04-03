@@ -1,5 +1,15 @@
 import React from 'react';
-import {ButtonToolbar, Glyphicon, Button, FormGroup, FormControl, ControlLabel, InputGroup, Row, Col} from 'react-bootstrap';
+import {
+  ButtonToolbar,
+  Glyphicon,
+  Button,
+  FormGroup,
+  FormControl,
+  ControlLabel,
+  InputGroup,
+  Row,
+  Col
+} from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import URLSearchParams from 'url-search-params';
 
@@ -17,12 +27,12 @@ class JobsFilter extends React.Component {
     };
     this.onStatusChange = this.onStatusChange.bind(this);
     this.applyFilter = this.applyFilter.bind(this);
-    this.clearFilters = this.clearFilters.bind(this)
+    this.clearFilters = this.clearFilters.bind(this);
     this.showOriginalFilter = this.showOriginalFilter.bind(this);
     this.onCompanySelectedHandler = this.onCompanySelectedHandler.bind(this);
     this.onChangePersonMin = this.onChangePersonMin.bind(this);
     this.onChangePersonMax = this.onChangePersonMax.bind(this);
-    this.onTitleChange = this.onTitleChange.bind(this)
+    this.onTitleChange = this.onTitleChange.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -76,7 +86,7 @@ class JobsFilter extends React.Component {
 
   applyFilter() {
     const { status, company, personMin, personMax, title } = this.state;
-    const history = this.props.history;
+    const { history, urlBase } = this.props;
     const params = new URLSearchParams();
     if (status) params.set('status', status);
     if (company) params.set('company', company)
@@ -85,7 +95,7 @@ class JobsFilter extends React.Component {
     if (title) params.set('title', title);
   
     const search = params.toString() ? `?${params.toString()}` : '';
-    history.push({ pathname: '/jobs', search });
+    history.push({ pathname: urlBase, search });
   }
 
   clearFilters() {
@@ -122,14 +132,8 @@ class JobsFilter extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     const companies = this.props.comp
-    const company = this.state.company
-    const status = this.state.status;
-    const changed = this.state.changed
-    const personMin = this.state.personMin
-    const personMax = this.state.personMax
-    const title = this.state.title
+    const { company, status, changed, personMin, personMax, title } = this.state;
     return (
       <div>
       <Row>

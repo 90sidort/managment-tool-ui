@@ -12,6 +12,9 @@ function NavBar() {
         <LinkContainer exact to ="/">
           <NavItem>Jobs</NavItem>
         </LinkContainer>
+        <LinkContainer exact to ="/reports">
+          <NavItem>Reports</NavItem>
+        </LinkContainer>
         <LinkContainer exact to ="/about">
           <NavItem>About</NavItem>
         </LinkContainer>

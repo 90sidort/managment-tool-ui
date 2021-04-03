@@ -93,3 +93,16 @@ export const getJobQuery = `query getJob($_id: ID) {
     created
   }
 }`;
+
+export const getStatusReport = `
+  query countJobs { 
+    jobCount {
+      New
+      Negotiation
+      Signed
+      Assigned
+      Ongoing
+      Closed
+    }
+  }
+`;

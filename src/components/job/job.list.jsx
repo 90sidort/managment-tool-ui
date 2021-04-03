@@ -110,7 +110,7 @@ class JobList extends React.Component {
               <Panel.Title toggle>Filters</Panel.Title>    
             </Panel.Heading>
             <Panel.Body collapsible>
-              <JobsFilter comp={this.state.companies} />
+              <JobsFilter comp={this.state.companies} urlBase="/jobs" />
             </Panel.Body>
           </Panel>
           <JobTable jobs={this.state.jobs} />

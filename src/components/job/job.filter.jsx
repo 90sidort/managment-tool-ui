@@ -113,6 +113,7 @@ class JobsFilter extends React.Component {
     params.set('personMin', '');
     params.set('personMax', '');
     params.set('title', '');
+    params.set('page', '')
 
     history.push({ pathname: '/jobs', search: '' });
   }

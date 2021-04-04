@@ -56,7 +56,7 @@ class JobDetails extends React.Component {
 
   render() {
     const { location: { query }} = this.props
-    console.log(this.props);
+    console.log(query);
     const details = this.state.details[0]
     const showTooltip = function(text) {
       return (

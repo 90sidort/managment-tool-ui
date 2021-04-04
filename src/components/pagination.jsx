@@ -1,6 +1,5 @@
 import React from 'react'
-import { Button } from 'react-bootstrap';
-// import { LinkContainer } from 'react-router-bootstrap';
+import { Col, ControlLabel, FormControl, FormGroup, Row } from 'react-bootstrap';
 
 export default function(props) {
     console.log(props);
@@ -8,14 +7,32 @@ export default function(props) {
     const paginator = []
     for(let i = 0; i < pages; i++) {
       paginator.push((
-        <Button key={i} onClick={() => changer(i+1)}>
+        <option key={i} value={i+1}>
         {i+1}
-      </Button>
+      </option>
       ))
     }
     return (
       <div>
-        {paginator}
+        <hr />
+        <Row>
+        <FormGroup>
+          <Col sm={1} componentClass={ControlLabel} style={{paddingTop: "0.35%", paddingRight: "0%", maxWidth: "5%"}}>Page</Col>
+          <Col sm={1} style={{paddingLeft: "0%"}}>
+            <FormControl
+              componentClass="select"
+              name="pages"
+              id="pages"
+              value={currentPage}
+              onChange={(e) => changer(e)}
+            >
+              {paginator}
+            </FormControl>
+          </Col>
+          <Col sm={10}/>
+        </FormGroup>
+        </Row>
+        <hr />
       </div>
     )
 }

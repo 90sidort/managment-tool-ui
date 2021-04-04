@@ -32,9 +32,18 @@ class JobList extends React.Component {
       this.deleteJob = this.deleteJob.bind(this);
       this.onChangePage = this.onChangePage.bind(this)
     }
-  
+
     componentDidMount() {
-      this.loadData(this.state.currentPage);
+      let savedPage
+      if (this.props) {
+        if (this.props.location.search.includes('page')) {
+          console.log(22222, this.props.location.search);
+          savedPage = parseInt(this.props.location.search.split('page')[1].match(/\d+/)[0])
+          console.log(3333, savedPage);
+          this.setState({currentPage: savedPage})
+        }
+      }
+      this.loadData();
       this.loadCompany();
     }
 
@@ -46,7 +55,9 @@ class JobList extends React.Component {
       }
     }
 
-    onChangePage(pageNum){
+    onChangePage(e){
+      const pageNum = parseInt(e.target.value)
+      console.log(pageNum);
       this.setState({currentPage: pageNum})
       let { location: { search } } = this.props;
       const { history } = this.props;
@@ -121,7 +132,7 @@ class JobList extends React.Component {
   
     render() {
       const { companies, jobs, pages, currentPage } = this.state
-      console.log(this.props.location);
+      console.log(this.props.location.search);
       return (
         <React.Fragment>
           <Panel>
@@ -134,7 +145,6 @@ class JobList extends React.Component {
           </Panel>
           <JobTable jobs={jobs} />
           <Paginator pages={pages} currentPage={currentPage} changer={this.onChangePage} />
-          <hr />
           <JobAdd createJob={this.createJob} comp={companies} />
           <Route path="/jobs/:id" render={(props) => (
             <React.Fragment>

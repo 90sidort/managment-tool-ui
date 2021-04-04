@@ -68,14 +68,14 @@ class JobPanel extends React.Component {
                 </Button>
               </NavLink>
             </OverlayTrigger>
-            <LinkContainer to={{pathname: `/details/${this.state.job._id}`, query: `/jobs/${search}`}}>
+            <LinkContainer to={{pathname: `/details/${this.state.job._id}`, query: `${search}`}}>
               <OverlayTrigger delayShow={1000} overlay={showTooltip("Fullscreen view")}>
                 <Button bsStyle="info" bsSize="small">
                   <Glyphicon glyph="glyphicon glyphicon-resize-full" />
                 </Button>
               </OverlayTrigger>
             </LinkContainer>
-            <LinkContainer to={{pathname: `/edit/${this.state.job._id}`, query: `/jobs/${search}`}}>
+            <LinkContainer to={{pathname: `/edit/${this.state.job._id}`, query: `${search}`}}>
               <OverlayTrigger delayShow={1000} overlay={showTooltip("Edit job")}>
                 <Button bsStyle="success" bsSize="small">
                   <Glyphicon glyph="glyphicon glyphicon-pencil" />

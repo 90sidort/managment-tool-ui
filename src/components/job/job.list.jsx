@@ -8,6 +8,7 @@ import JobTable from "./job.table.jsx"
 import JobAdd from "./job.add.jsx"
 import JobPanel from './job.panel.jsx';
 import withToast from '../toast.wrapper.jsx';
+import Paginator from '../pagination.jsx'
 import {
   createJobQuery,
   deleteJobQuery,
@@ -24,13 +25,16 @@ class JobList extends React.Component {
         toastVisible: false,
         toastMessage: ' ',
         toastType: 'success',
+        pages: null,
+        currentPage: 1
       };
       this.createJob = this.createJob.bind(this);
       this.deleteJob = this.deleteJob.bind(this);
+      this.onChangePage = this.onChangePage.bind(this)
     }
   
     componentDidMount() {
-      this.loadData();
+      this.loadData(this.state.currentPage);
       this.loadCompany();
     }
 
@@ -41,12 +45,24 @@ class JobList extends React.Component {
         this.loadData();
       }
     }
-  
+
+    onChangePage(pageNum){
+      this.setState({currentPage: pageNum})
+      let { location: { search } } = this.props;
+      const { history } = this.props;
+      const params = new URLSearchParams(search);
+      params.set('page', pageNum);
+      search = params.toString() ? `?${params.toString()}` : '';
+      history.push({ pathname: "/jobs", search });
+      this.loadData()
+    }
+
     async loadData() {
       const { location: { search }, showError } = this.props;
       const params = new URLSearchParams(search);
       const vars = {};
 
+      if (params.get('page')) vars.page = params.get('page')
       if (params.get('status')) vars.status = params.get('status');
       if (params.get('title')) vars.title = params.get('title');
       if (params.get('company')) vars.company = params.get('company');
@@ -59,6 +75,7 @@ class JobList extends React.Component {
       const data = await graphQLFetch(query, vars, showError);
         if (data) {
           this.setState({ jobs: data.job.jobs });
+          this.setState({pages: data.job.pages})
         } else {
           showError('Unable to load data')
         }
@@ -103,6 +120,8 @@ class JobList extends React.Component {
     }
   
     render() {
+      const { companies, jobs, pages, currentPage } = this.state
+      console.log(this.props.location);
       return (
         <React.Fragment>
           <Panel>
@@ -110,16 +129,17 @@ class JobList extends React.Component {
               <Panel.Title toggle>Filters</Panel.Title>    
             </Panel.Heading>
             <Panel.Body collapsible>
-              <JobsFilter comp={this.state.companies} urlBase="/jobs" />
+              <JobsFilter comp={companies} urlBase="/jobs" />
             </Panel.Body>
           </Panel>
-          <JobTable jobs={this.state.jobs} />
+          <JobTable jobs={jobs} />
+          <Paginator pages={pages} currentPage={currentPage} changer={this.onChangePage} />
           <hr />
-          <JobAdd createJob={this.createJob} comp={this.state.companies} />
+          <JobAdd createJob={this.createJob} comp={companies} />
           <Route path="/jobs/:id" render={(props) => (
             <React.Fragment>
               <hr />
-                <JobPanel {...props} deleteJob={this.deleteJob} />
+                <JobPanel {...props} deleteJob={this.deleteJob} previous={this.props.location} />
               <hr />
             </React.Fragment>
           )} />

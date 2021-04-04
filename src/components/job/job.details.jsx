@@ -55,6 +55,8 @@ class JobDetails extends React.Component {
   }
 
   render() {
+    const { location: { query }} = this.props
+    console.log(this.props);
     const details = this.state.details[0]
     const showTooltip = function(text) {
       return (
@@ -72,7 +74,7 @@ class JobDetails extends React.Component {
               </Button>
             </OverlayTrigger>
           </LinkContainer>
-          <LinkContainer to={`/jobs/${this.state.id}`}>
+          <LinkContainer to={`/jobs/${this.state.id}${query}`}>
             <OverlayTrigger delayShow={1000} overlay={showTooltip("Panel view")}>
               <Button bsStyle="info" bsSize="small">
                 <Glyphicon glyph="glyphicon glyphicon-resize-small" />

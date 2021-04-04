@@ -226,6 +226,7 @@ class JobEdit extends React.Component {
     } = this.state 
     const start = this.state.start.toISOString().split("T")[0]
     const end = this.state.end.toISOString().split("T")[0]
+    const { location: { query }} = this.props
     const showTooltip = function(text) {
       return (
         <Tooltip id="show-tooltip" placement="top">{text}</Tooltip>
@@ -236,21 +237,7 @@ class JobEdit extends React.Component {
       {jobId ? (
       <Panel>
         <Panel.Heading>
-          <LinkContainer to={`/details/${this.state.id}`}>
-            <OverlayTrigger delayShow={1000} overlay={showTooltip("Fullscreen view")}>
-              <Button bsStyle="info" bsSize="small">
-                <Glyphicon glyph="glyphicon glyphicon-resize-full" />
-              </Button>
-            </OverlayTrigger>
-          </LinkContainer>
-          {' '}
-          <LinkContainer to={`/jobs/${this.state.id}`}>
-            <OverlayTrigger delayShow={1000} overlay={showTooltip("Panel view")}>
-              <Button bsStyle="success" bsSize="small">
-                <Glyphicon glyph="glyphicon glyphicon-resize-small" />
-              </Button>
-            </OverlayTrigger>
-          </LinkContainer>
+          <h4>Editing</h4>
         </Panel.Heading>
         <Form horizontal name="jobEdit" onSubmit={this.onSubmitHandle}>
         {companies && companyValue &&

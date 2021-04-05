@@ -4,7 +4,6 @@ import { FormControl, Panel, Table } from 'react-bootstrap';
 import withToast from '../toast.wrapper.jsx'
 import graphQLFetch from '../../utils/graphqlFetch'
 import { getStatusReport } from '../../utils/queries/job.queries.js';
-import { name } from 'file-loader';
 
 class IssueReport extends React.Component {
   constructor(){
@@ -44,7 +43,6 @@ class IssueReport extends React.Component {
           valueTable.push(statistics[val])
         }
       );
-      console.log({header: headerTable, value: valueTable});
       return {header: headerTable, value: valueTable}
     }
   }
@@ -53,9 +51,6 @@ class IssueReport extends React.Component {
     const { stats } = this.state;
     if (stats == null) return null;
     const table = this.createTable(stats)
-
-    console.log(table);
-
     return (
       <React.Fragment>
         <Panel>

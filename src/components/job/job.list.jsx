@@ -26,23 +26,15 @@ class JobList extends React.Component {
         toastMessage: ' ',
         toastType: 'success',
         pages: null,
-        currentPage: 1
+        currentPage: 1,
+        records: 5
       };
       this.createJob = this.createJob.bind(this);
       this.deleteJob = this.deleteJob.bind(this);
-      this.onChangePage = this.onChangePage.bind(this)
+      this.onChangeDisplay = this.onChangeDisplay.bind(this)
     }
 
     componentDidMount() {
-      let savedPage
-      if (this.props) {
-        if (this.props.location.search.includes('page')) {
-          console.log(22222, this.props.location.search);
-          savedPage = parseInt(this.props.location.search.split('page')[1].match(/\d+/)[0])
-          console.log(3333, savedPage);
-          this.setState({currentPage: savedPage})
-        }
-      }
       this.loadData();
       this.loadCompany();
     }
@@ -55,14 +47,19 @@ class JobList extends React.Component {
       }
     }
 
-    onChangePage(e){
-      const pageNum = parseInt(e.target.value)
-      console.log(pageNum);
-      this.setState({currentPage: pageNum})
+    onChangeDisplay(e){
+      const operation =  e.target.name
+      const value = parseInt(e.target.value)
+      if (operation === 'pages') this.setState({currentPage: value})
+      if (operation === 'records') this.setState({records: value})
       let { location: { search } } = this.props;
       const { history } = this.props;
       const params = new URLSearchParams(search);
-      params.set('page', pageNum);
+      if (operation === 'pages') params.set('page', value)
+      if (operation === 'records') {
+        params.set('records', value)
+        params.set('page', 1)
+      }      
       search = params.toString() ? `?${params.toString()}` : '';
       history.push({ pathname: "/jobs", search });
       this.loadData()
@@ -74,6 +71,7 @@ class JobList extends React.Component {
       const vars = {};
 
       if (params.get('page')) vars.page = params.get('page')
+      if (params.get('records')) vars.records = params.get('records')
       if (params.get('status')) vars.status = params.get('status');
       if (params.get('title')) vars.title = params.get('title');
       if (params.get('company')) vars.company = params.get('company');
@@ -81,6 +79,8 @@ class JobList extends React.Component {
       if (!Number.isNaN(personMin)) vars.personMin = personMin;
       const personMax = parseInt(params.get('personMax'), 10);
       if (!Number.isNaN(personMax)) vars.personMax = personMax;
+      if (vars.page) this.setState({currentPage: parseInt(vars.page)})
+      if (vars.records) this.setState({records: parseInt(vars.records)})
 
       const query = jobListQuery;
       const data = await graphQLFetch(query, vars, showError);
@@ -131,8 +131,7 @@ class JobList extends React.Component {
     }
   
     render() {
-      const { companies, jobs, pages, currentPage } = this.state
-      console.log(this.props.location.search);
+      const { companies, jobs, pages, currentPage, records } = this.state
       return (
         <React.Fragment>
           <Panel>
@@ -143,8 +142,8 @@ class JobList extends React.Component {
               <JobsFilter comp={companies} urlBase="/jobs" />
             </Panel.Body>
           </Panel>
-          <JobTable jobs={jobs} />
-          <Paginator pages={pages} currentPage={currentPage} changer={this.onChangePage} />
+          {jobs && <JobTable jobs={jobs} />}
+          <Paginator pages={pages} currentPage={currentPage} changer={this.onChangeDisplay} records={records} />
           <JobAdd createJob={this.createJob} comp={companies} />
           <Route path="/jobs/:id" render={(props) => (
             <React.Fragment>

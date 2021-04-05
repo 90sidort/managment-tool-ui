@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 import JobRow from "./job.row.jsx"
 
 export default function JobTable(props) {
-    const jobRows = props.jobs.map((job) => <JobRow job={job} key={job._id} />);
+  const jobRows = props.jobs.map((job) => <JobRow job={job} key={job._id} />);
     return (
       props.jobs.length > 0 ?
 (      <Table bordered condensed hover responsive>

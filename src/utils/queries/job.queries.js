@@ -6,7 +6,9 @@ export const jobListQuery = `query getJob(
   $company: ID,
   $personMin: Int,
   $personMax: Int,
-	$page: Int) {
+	$page: Int,
+	$records: Int
+) {
   job(
     _id: $_id,
     title: $title,
@@ -15,7 +17,8 @@ export const jobListQuery = `query getJob(
     company: $company,
 		personMin: $personMin,
   	personMax: $personMax,
-    page: $page
+    page: $page,
+    records: $records
   ) {
     	jobs {
       _id
@@ -35,6 +38,7 @@ export const jobListQuery = `query getJob(
       created
       }
     pages
+    records
   }
 }`;
 

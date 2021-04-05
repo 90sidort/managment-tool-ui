@@ -23,9 +23,6 @@ class JobList extends React.Component {
       this.state = {
         jobs: [],
         companies: [],
-        toastVisible: false,
-        toastMessage: ' ',
-        toastType: 'success',
         pages: null,
         currentPage: 1,
         records: 5,

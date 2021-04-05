@@ -4,6 +4,7 @@ import {
   Col,
   Glyphicon,
   Grid,
+  Modal,
   OverlayTrigger,
   Panel,
   Row,
@@ -11,8 +12,9 @@ import {
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import withToast from '../toast.wrapper.jsx'
 import graphQLFetch from '../../utils/graphqlFetch';
+import withToast from '../toast.wrapper.jsx'
+import ModalConfirm from "../modal.jsx"
 import { deleteJobQuery, getJobQuery } from '../../utils/queries/job.queries.js';
 
 class JobDetails extends React.Component {
@@ -21,15 +23,26 @@ class JobDetails extends React.Component {
     this.state = {
       details: {},
         id : this.props.match.params.id,
-        toastVisible: false,
-        toastMessage: ' ',
-        toastType: 'success',
+        showing: false
     };
-    this.deleteJob = this.deleteJob.bind(this)
+    this.deleteJob = this.deleteJob.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.confirm = this.confirm.bind(this);
   }
 
   componentDidMount() {
     this.loadDetails(this.state.id);
+  }
+
+  showModal(){
+    const { showing } = this.state;
+    this.setState({showing: !showing})
+  }
+
+  confirm(result){
+    const id = this.props.location.pathname.split("/details/")[1];
+    if (result) this.deleteJob(id)
+    this.setState({showing: false})
   }
 
   async loadDetails(_id) {
@@ -56,8 +69,8 @@ class JobDetails extends React.Component {
 
   render() {
     const { location: { query }} = this.props
-    console.log(query);
     const details = this.state.details[0]
+    const { showing } = this.state
     const showTooltip = function(text) {
       return (
         <Tooltip id="show-tooltip" placement="top">{text}</Tooltip>
@@ -82,10 +95,13 @@ class JobDetails extends React.Component {
             </OverlayTrigger>
           </LinkContainer>
           <OverlayTrigger delayShow={1000} overlay={showTooltip("Delete job")}>
-              <Button bsStyle="danger" bsSize="small" onClick={() => {this.deleteJob(this.state.id)}}>
-                <Glyphicon glyph="glyphicon glyphicon-remove-circle" />
-              </Button>
-            </OverlayTrigger>
+            <Button bsStyle="danger" bsSize="small" onClick={this.showModal}>
+              <Glyphicon glyph="glyphicon glyphicon-remove-circle" />
+            </Button>
+          </OverlayTrigger>
+          <Modal show={showing}>
+            <ModalConfirm showHide={this.showModal} confirm={this.confirm} text={"Do you really want to delete this job?"}/>
+          </Modal>
         </Panel.Heading>
         {details && (
           <Grid>

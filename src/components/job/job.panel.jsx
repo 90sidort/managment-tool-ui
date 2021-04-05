@@ -51,6 +51,7 @@ class JobPanel extends React.Component {
     }
 
   render(){
+    console.log(this.props);
     const { previous : { search } } = this.props
     const data = this.state.job
     const showTooltip = function(text) {
@@ -83,7 +84,7 @@ class JobPanel extends React.Component {
               </OverlayTrigger>
             </LinkContainer>
             <OverlayTrigger delayShow={1000} overlay={showTooltip("Delete job")}>
-              <Button bsStyle="danger" bsSize="small" onClick={() => {this.props.deleteJob(this.state.job._id)}}>
+              <Button bsStyle="danger" bsSize="small" onClick={() => this.props.showModal(this.state.job._id)}>
                 <Glyphicon glyph="glyphicon glyphicon-remove-circle" />
               </Button>
             </OverlayTrigger>

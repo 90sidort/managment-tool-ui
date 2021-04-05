@@ -1,11 +1,12 @@
 import React from 'react';
 import { Route } from 'react-router';
-import { Panel } from 'react-bootstrap';
+import { Button, Modal, Panel } from 'react-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch'
 import JobsFilter from "./job.filter.jsx"
 import JobTable from "./job.table.jsx"
 import JobAdd from "./job.add.jsx"
+import ModalConfirm from "../modal.jsx"
 import JobPanel from './job.panel.jsx';
 import withToast from '../toast.wrapper.jsx';
 import Paginator from '../pagination.jsx'
@@ -27,11 +28,14 @@ class JobList extends React.Component {
         toastType: 'success',
         pages: null,
         currentPage: 1,
-        records: 5
+        records: 5,
+        showing: false
       };
       this.createJob = this.createJob.bind(this);
       this.deleteJob = this.deleteJob.bind(this);
-      this.onChangeDisplay = this.onChangeDisplay.bind(this)
+      this.onChangeDisplay = this.onChangeDisplay.bind(this);
+      this.showModal = this.showModal.bind(this);
+      this.confirm = this.confirm.bind(this);
     }
 
     componentDidMount() {
@@ -45,6 +49,17 @@ class JobList extends React.Component {
       if (prevSearch !== search) {
         this.loadData();
       }
+    }
+
+    showModal(){
+      const { showing } = this.state;
+      this.setState({showing: !showing})
+    }
+
+    confirm(result){
+      const id = this.props.location.pathname.split("/jobs/")[1];
+      if (result) this.deleteJob(id)
+      this.setState({showing: false})
     }
 
     onChangeDisplay(e){
@@ -79,8 +94,8 @@ class JobList extends React.Component {
       if (!Number.isNaN(personMin)) vars.personMin = personMin;
       const personMax = parseInt(params.get('personMax'), 10);
       if (!Number.isNaN(personMax)) vars.personMax = personMax;
-      if (vars.page) this.setState({currentPage: parseInt(vars.page)})
-      if (vars.records) this.setState({records: parseInt(vars.records)})
+      vars.page ? this.setState({currentPage: parseInt(vars.page)}) : this.setState({currentPage: 1})
+      vars.records ? this.setState({records: parseInt(vars.records)}) : this.setState({records: 5})
 
       const query = jobListQuery;
       const data = await graphQLFetch(query, vars, showError);
@@ -119,6 +134,7 @@ class JobList extends React.Component {
     async deleteJob(_id) {
       const { showError, showSuccess } = this.props
       const query = deleteJobQuery;
+      console.log('z joba', _id);
 
       const data = await graphQLFetch(query, { _id }, showError);
       if (data) {
@@ -131,7 +147,7 @@ class JobList extends React.Component {
     }
   
     render() {
-      const { companies, jobs, pages, currentPage, records } = this.state
+      const { companies, jobs, pages, currentPage, records, showing } = this.state
       return (
         <React.Fragment>
           <Panel>
@@ -148,7 +164,10 @@ class JobList extends React.Component {
           <Route path="/jobs/:id" render={(props) => (
             <React.Fragment>
               <hr />
-                <JobPanel {...props} deleteJob={this.deleteJob} previous={this.props.location} />
+                <JobPanel {...props} previous={this.props.location} showModal={this.showModal} />
+                <Modal show={showing}>
+                  <ModalConfirm showHide={this.showModal} confirm={this.confirm} text={"Do you really want to delete this job?"}/>
+                </Modal>
               <hr />
             </React.Fragment>
           )} />

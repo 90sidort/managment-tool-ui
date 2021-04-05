@@ -114,6 +114,7 @@ class JobsFilter extends React.Component {
     params.set('personMax', '');
     params.set('title', '');
     params.set('page', '')
+    params.set('records', '')
 
     history.push({ pathname: '/jobs', search: '' });
   }

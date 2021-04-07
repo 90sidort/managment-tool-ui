@@ -3,6 +3,7 @@ import { Route } from 'react-router';
 import { Button, Modal, Panel } from 'react-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch'
+import AuthContext from "../../context/auth.context.js";
 import JobsFilter from "./job.filter.jsx"
 import JobTable from "./job.table.jsx"
 import JobAdd from "./job.add.jsx"
@@ -18,6 +19,7 @@ import {
 } from '../../utils/queries/job.queries';
 
 class JobList extends React.Component {
+    static contextType = AuthContext;
     constructor() {
       super();
       this.state = {
@@ -145,6 +147,7 @@ class JobList extends React.Component {
   
     render() {
       const { companies, jobs, pages, currentPage, records, showing } = this.state
+      console.log(111, this.context.token);
       return (
         <React.Fragment>
           <Panel>

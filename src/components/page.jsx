@@ -2,6 +2,8 @@ import React from 'react';
 import { Glyphicon, Grid, Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+import AuthContext from '../context/auth.context.js';
+
 import Contents from './content.jsx';
 
 function NavBar() {
@@ -60,14 +62,41 @@ function Footer() {
   );
 }
 
-export default function Page() {
-  return (
-    <div>
-      <NavBar />
-      <Grid fluid>
-        <Contents />
-      </Grid>
-      <Footer />
-    </div>
-  );
+export default class Page extends React.Component {
+  constructor(){
+    super()
+    this.state = {
+      token: null,
+      userId: null,
+    };
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
+  }
+  login = (token, userId, tokenExpiration) => {
+    this.setState({ token: token, userId: userId });
+  };
+
+  logout = () => {
+    this.setState({ token: null, userId: null });
+  };
+  render() {
+    return (
+      <React.Fragment>
+        <AuthContext.Provider
+            value={{
+              token: this.state.token,
+              userId: this.state.userId,
+              login: this.login,
+              logout: this.logout,
+            }}
+          >
+          <NavBar />
+          <Grid fluid>
+            <Contents />
+          </Grid>
+          <Footer />
+        </AuthContext.Provider>
+      </React.Fragment>
+      );
+    }
 }

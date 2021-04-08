@@ -85,18 +85,20 @@ export default class Page extends React.Component {
   constructor(){
     super()
     this.state = {
-      token: null,
-      userId: null,
+      token: (JSON.parse(localStorage.getItem('userData')) && JSON.parse(localStorage.getItem('userData')).token)  || null,
+      userId: (JSON.parse(localStorage.getItem('userData')) && JSON.parse(localStorage.getItem('userData')).userId) || null,
     };
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
   }
   login (token, userId, tokenExpiration) {
     this.setState({ token, userId });
+    localStorage.setItem('userData', JSON.stringify({userId, token}));
   };
 
   logout() {
     this.setState({ token: null, userId: null });
+    localStorage.removeItem('userData');
   };
   render() {
     return (

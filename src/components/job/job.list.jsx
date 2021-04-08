@@ -83,6 +83,7 @@ class JobList extends React.Component {
       const { location: { search }, showError } = this.props;
       const params = new URLSearchParams(search);
       const vars = {};
+      const { token } = this.context
 
       if (params.get('page')) vars.page = params.get('page')
       if (params.get('records')) vars.records = params.get('records')
@@ -97,7 +98,7 @@ class JobList extends React.Component {
       vars.records ? this.setState({records: parseInt(vars.records)}) : this.setState({records: 5})
 
       const query = jobListQuery;
-      const data = await graphQLFetch(query, vars, showError);
+      const data = await graphQLFetch(query, vars, showError, token);
         if (data) {
           this.setState({ jobs: data.job.jobs });
           this.setState({pages: data.job.pages})

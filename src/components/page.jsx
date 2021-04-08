@@ -8,41 +8,60 @@ import Contents from './content.jsx';
 
 function NavBar() {
   return (
-    <Navbar fluid expand="lg">
-      <Navbar.Brand>Job Tracker</Navbar.Brand>
-      <Nav>
-        <LinkContainer exact to ="/">
-          <NavItem>Jobs</NavItem>
-        </LinkContainer>
-        <LinkContainer exact to ="/reports">
-          <NavItem>Reports</NavItem>
-        </LinkContainer>
-        <LinkContainer exact to ="/about">
-          <NavItem>About</NavItem>
-        </LinkContainer>
-      </Nav>
-      <Nav pullRight>
-        <Navbar.Text>Admin panel</Navbar.Text>
-        <NavDropdown
-          id="user-dropdown"
-          title={<Glyphicon glyph="option-vertical" />}
-          noCaret
-        >
-          <LinkContainer exact to ="/skills">
-            <NavItem>Skills</NavItem>
-          </LinkContainer>
-          <LinkContainer exact to ="/comps">
-            <NavItem>Companies</NavItem>
-          </LinkContainer>
-          <LinkContainer exact to ="/reps">
-            <NavItem>Representatives</NavItem>
-          </LinkContainer>
-          <LinkContainer exact to ="/locs">
-            <NavItem>Locations</NavItem>
-          </LinkContainer>
-        </NavDropdown>
-      </Nav>
-    </Navbar>
+    <AuthContext.Consumer>
+      {(context) => {
+        console.log(context);
+        return (
+          <Navbar fluid expand="lg">
+            <Navbar.Brand>Job Tracker</Navbar.Brand>
+            <Nav>
+            {context.token &&
+            (<LinkContainer exact to ="/">
+                <NavItem>Jobs</NavItem>
+              </LinkContainer>)}
+            {context.token &&
+              (<LinkContainer exact to ="/reports">
+                <NavItem>Reports</NavItem>
+              </LinkContainer>)}
+              {!context.token &&
+              (<LinkContainer exact to="/auth">
+                <NavItem>Authenticate</NavItem>
+              </LinkContainer>)}
+              {context.token &&
+              (<LinkContainer exact to ="/about">
+                <NavItem>About</NavItem>
+              </LinkContainer>)}
+            </Nav>
+            {context.token && (
+              <Nav pullRight>
+                <Navbar.Text>Admin panel</Navbar.Text>
+                  <NavDropdown
+                    id="user-dropdown"
+                    title={<Glyphicon glyph="option-vertical" />}
+                    noCaret
+                  >
+                    <LinkContainer exact to ="/skills">
+                      <NavItem>Skills</NavItem>
+                    </LinkContainer>
+                    <LinkContainer exact to ="/comps">
+                      <NavItem>Companies</NavItem>
+                    </LinkContainer>
+                    <LinkContainer exact to ="/reps">
+                      <NavItem>Representatives</NavItem>
+                    </LinkContainer>
+                    <LinkContainer exact to ="/locs">
+                      <NavItem>Locations</NavItem>
+                    </LinkContainer>
+                  </NavDropdown>
+                <LinkContainer exact to="/auth">
+                  <NavItem onClick={context.logout}><Glyphicon glyph="glyphicon glyphicon-log-out" />{' '}Logout</NavItem>
+                </LinkContainer>
+             </Nav>
+            )}
+          </Navbar>
+        )
+      }}
+    </AuthContext.Consumer>
   );
 }
 
@@ -72,11 +91,11 @@ export default class Page extends React.Component {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
   }
-  login = (token, userId, tokenExpiration) => {
-    this.setState({ token: token, userId: userId });
+  login (token, userId, tokenExpiration) {
+    this.setState({ token, userId });
   };
 
-  logout = () => {
+  logout() {
     this.setState({ token: null, userId: null });
   };
   render() {

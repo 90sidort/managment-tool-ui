@@ -15,9 +15,11 @@ import { NavLink } from 'react-router-dom'
 import withToast from '../toast.wrapper.jsx';
 
 import graphQLFetch from '../../utils/graphqlFetch'
+import AuthContext from "../../context/auth.context.js";
 import { jobListQuery } from '../../utils/queries/job.queries.js'
 
 class JobPanel extends React.Component {
+    static contextType = AuthContext;
     constructor(){
       super()
       this.state = {
@@ -40,8 +42,9 @@ class JobPanel extends React.Component {
     async loadData() {
       const _id = this.props.match.params.id
       const { showError } = this.props
+      const { token } = this.context
       const query = jobListQuery;
-        const data = await graphQLFetch(query, { _id }, showError);
+        const data = await graphQLFetch(query, { _id }, showError, token);
         if (data) {
           this.setState({ job: data.job.jobs[0] });
         } else {

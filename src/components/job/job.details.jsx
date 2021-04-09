@@ -13,11 +13,13 @@ import {
 import { LinkContainer } from 'react-router-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch';
+import AuthContext from "../../context/auth.context.js";
 import withToast from '../toast.wrapper.jsx'
 import ModalConfirm from "../modal.jsx"
 import { deleteJobQuery, getJobQuery } from '../../utils/queries/job.queries.js';
 
 class JobDetails extends React.Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -47,8 +49,9 @@ class JobDetails extends React.Component {
 
   async loadDetails(_id) {
     const { showError } = this.props
+    const { token } = this.context
     const query = getJobQuery;
-    const data = await graphQLFetch(query, { _id }, showError);
+    const data = await graphQLFetch(query, { _id }, showError, token);
     if (data) {
       this.setState({ details: data.job.jobs });
     } else {
@@ -58,8 +61,9 @@ class JobDetails extends React.Component {
 
   async deleteJob(_id) {
     const { showError } = this.props
+    const { token } = this.context
     const query = deleteJobQuery;
-    const data = await graphQLFetch(query, { _id }, showError);
+    const data = await graphQLFetch(query, { _id }, showError, token);
     if (data) {
       this.props.history.push("/jobs")
     } else {

@@ -6,15 +6,13 @@ import {
   Form,
   FormControl,
   FormGroup,
-  Glyphicon,
-  OverlayTrigger,
   Panel,
   Tooltip,
   Alert
 } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch';
+import AuthContext from "../../context/auth.context.js";
 import editValidation from '../../utils/editValidation'
 import { createOptions } from "../../utils/createOptions"
 import { getJobQuery, loadComapnyQuery, loadLoc, loadReps, updateJob } from '../../utils/queries/job.queries';
@@ -22,6 +20,7 @@ import { loadSkills } from '../../utils/queries/skill.queries';
 import withToast from '../toast.wrapper.jsx';
 
 class JobEdit extends React.Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -131,8 +130,9 @@ class JobEdit extends React.Component {
 
   async updateData(_id, changes) {
     const { showError } = this.props
+    const { token } = this.context
     const query = updateJob;
-    const data = await graphQLFetch(query, {_id, changes}, showError);
+    const data = await graphQLFetch(query, {_id, changes}, showError, token);
     if (!data) {
       showError("Unable to save changes")
     }
@@ -140,8 +140,9 @@ class JobEdit extends React.Component {
 
   async loadCompany() {
     const { showError } = this.props
+    const { token } = this.context
     const query = loadComapnyQuery;
-    const data = await graphQLFetch(query, {}, showError);
+    const data = await graphQLFetch(query, {}, showError, token);
     if (data) {
       this.setState({ companies: data.company })
     } else {
@@ -149,9 +150,10 @@ class JobEdit extends React.Component {
     }
   }
   async loadSkills() {
+    const { token } = this.context
     const { showError } = this.props
     const query = loadSkills;
-    const data = await graphQLFetch(query, {}, showError);
+    const data = await graphQLFetch(query, {}, showError, token);
     if (data) {
       this.setState({ availSkills: data.skill })
     } else {
@@ -160,9 +162,10 @@ class JobEdit extends React.Component {
   }
 
   async loadRep(cid) {
+    const { token } = this.context
     const { showError } = this.props
     const query = loadReps;
-    const data = await graphQLFetch(query, { cid }, showError);
+    const data = await graphQLFetch(query, { cid }, showError, token);
     if (data) {
       this.setState({ representatives: data.representative });
     } else {
@@ -171,9 +174,10 @@ class JobEdit extends React.Component {
   }
 
   async loadLoc(cid) {
+    const { token } = this.context
     const { showError } = this.props
     const query = loadLoc;
-    const data = await graphQLFetch(query, { cid }, showError);
+    const data = await graphQLFetch(query, { cid }, showError, token);
     if (data) {
       this.setState({ locations: data.location });
     } else {
@@ -182,10 +186,11 @@ class JobEdit extends React.Component {
   }
 
   async loadDetails(_id) {
+    const { token } = this.context
     const { showError } = this.props
     const query = getJobQuery;
 
-    const data = await graphQLFetch(query, { _id }, showError);
+    const data = await graphQLFetch(query, { _id }, showError, token);
     if (data) {
       const setData = data.job.jobs[0]
       this.setState({jobId: setData._id})
@@ -227,11 +232,6 @@ class JobEdit extends React.Component {
     const start = this.state.start.toISOString().split("T")[0]
     const end = this.state.end.toISOString().split("T")[0]
     const { location: { query }} = this.props
-    const showTooltip = function(text) {
-      return (
-        <Tooltip id="show-tooltip" placement="top">{text}</Tooltip>
-      )
-    }
     return(
       <div>
       {jobId ? (

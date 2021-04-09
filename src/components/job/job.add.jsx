@@ -12,11 +12,13 @@ import {
 
 import addValidation from '../../utils/addValidation';
 import withToast from '../toast.wrapper.jsx';
-import graphQLFetch from '../../utils/graphqlFetch'
+import graphQLFetch from '../../utils/graphqlFetch';
+import AuthContext from "../../context/auth.context.js";
 import { loadLoc, loadReps } from '../../utils/queries/job.queries';
 import { createOptions } from "../../utils/createOptions"
 
 class JobAdd extends React.Component {
+    static contextType = AuthContext;
     constructor() {
       super();
       this.state = {
@@ -31,9 +33,10 @@ class JobAdd extends React.Component {
     }
 
     async loadRep(cid) {
+      const { token } = this.context
       const { showError } = this.props
       const query = loadReps;
-      const data = await graphQLFetch(query, { cid }, showError);
+      const data = await graphQLFetch(query, { cid }, showError, token);
       if (data) {
         this.setState({ representatives: data.representative });
       } else {
@@ -42,9 +45,10 @@ class JobAdd extends React.Component {
     }
   
     async loadLoc(cid) {
+      const { token } = this.context
       const { showError } = this.props
       const query = loadLoc;
-      const data = await graphQLFetch(query, { cid }, showError);
+      const data = await graphQLFetch(query, { cid }, showError, token);
       if (data) {
         this.setState({ locations: data.location });
       } else {

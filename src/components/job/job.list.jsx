@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router';
-import { Button, Modal, Panel } from 'react-bootstrap';
+import { Modal, Panel } from 'react-bootstrap';
 
 import graphQLFetch from '../../utils/graphqlFetch'
 import AuthContext from "../../context/auth.context.js";
@@ -109,8 +109,9 @@ class JobList extends React.Component {
   
     async loadCompany() {
       const { showError } = this.props
+      const { token } = this.context
       const query = loadComapnyQuery;
-      const data = await graphQLFetch(query, {}, showError);
+      const data = await graphQLFetch(query, {}, showError, token);
       if (data) {
         this.setState({ companies: data.company });
       } else {
@@ -121,8 +122,9 @@ class JobList extends React.Component {
     async createJob(job) {
       const { showError, showSuccess } = this.props
       const query = createJobQuery;
+      const { token } = this.context
   
-      const data = await graphQLFetch(query, { job }, showError);
+      const data = await graphQLFetch(query, { job }, showError, token);
       if (data) {
         showSuccess('Job created successfully');
         this.loadData();
@@ -133,10 +135,11 @@ class JobList extends React.Component {
 
     async deleteJob(_id) {
       const { showError, showSuccess } = this.props
+      const { token } = this.context
       const query = deleteJobQuery;
       console.log('z joba', _id);
 
-      const data = await graphQLFetch(query, { _id }, showError);
+      const data = await graphQLFetch(query, { _id }, showError, token);
       if (data) {
         showSuccess('Job deleted successfully');
         this.props.history.push("/jobs")

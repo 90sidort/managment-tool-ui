@@ -3,9 +3,11 @@ import { FormControl, Panel, Table } from 'react-bootstrap';
 
 import withToast from '../toast.wrapper.jsx'
 import graphQLFetch from '../../utils/graphqlFetch'
+import AuthContext from "../../context/auth.context.js";
 import { getStatusReport } from '../../utils/queries/job.queries.js';
 
 class IssueReport extends React.Component {
+  static contextType = AuthContext;
   constructor(){
     super()
     this.state = {
@@ -17,8 +19,9 @@ class IssueReport extends React.Component {
 
   async loadReport(subject){
     const { showError } = this.props
+    const { token } = this.context
     const query = subject === 'status' ? getStatusReport : '';
-    const data = await graphQLFetch(query, {}, showError);
+    const data = await graphQLFetch(query, {}, showError, token);
     if (data) {
       this.setState({ stats: data.jobCount[0] });
     } else {

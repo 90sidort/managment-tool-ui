@@ -42,11 +42,9 @@ export const jobListQuery = `query getJob(
   }
 }`;
 
-export const loadComapnyQuery = `query {
-  company {
-    _id
-    name
-  }
+export const loadComapnyQuery = `
+query getCompanies($_id: ID) {
+  company(_id: $_id) {name _id}
 }`;
 
 export const createJobQuery = `

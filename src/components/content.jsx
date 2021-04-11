@@ -7,6 +7,7 @@ import JobEdit from "./job/job.edit.jsx"
 import IssueReport from './job/job.report.jsx';
 import AuthPage from './auth/auth.jsx';
 import AuthContext from '../context/auth.context.js';
+import SkillList from './skill/skill.list.jsx';
 
 const NotFound = () => <h1>Page Not Found</h1>;
 
@@ -24,6 +25,7 @@ export default function Contents() {
           {context.token && <Route path="/details/:id" component={JobDetails} />}
           {context.token && <Route path="/edit/:id" component={JobEdit} />}
           {context.token && <Route path="/reports" component={IssueReport} />}
+          {context.token && <Route path="/skills" component={SkillList} />}
           {!context.token && <Redirect to="/auth" exact />}
           <Route component={NotFound} />
       </Switch>

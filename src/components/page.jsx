@@ -40,7 +40,7 @@ function NavBar() {
                     title={<Glyphicon glyph="option-vertical" />}
                     noCaret
                   >
-                    <LinkContainer exact to ="/skills">
+                    <LinkContainer exact to = "/skills">
                       <NavItem>Skills</NavItem>
                     </LinkContainer>
                     <LinkContainer exact to ="/comps">

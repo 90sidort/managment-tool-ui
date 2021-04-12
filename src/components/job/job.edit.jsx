@@ -255,8 +255,8 @@ class JobEdit extends React.Component {
                 </FormControl>
                 {errors.company && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("company")}>{errors.company}</Alert>}
               </Col>
-              <Col sm={2} />
-            </FormGroup>}
+            <Col sm={2} />
+          </FormGroup>}
             {representatives && repValue && 
               <FormGroup>
                 <Col componentClass={ControlLabel} sm={2}>Representative</Col>

@@ -13,3 +13,16 @@ mutation updateSkill($_id: ID!, $name: String!) {
     _id
   }
 }`
+
+export const addSkills = `
+  mutation addNewSkill($skill: SkillInput!) {
+    skillAdd(skill: $skill) {
+      name _id
+    }
+  }
+`
+
+export const deleteSkill = `
+  mutation deletSkill($_id: ID!) {
+	  skillDelete(_id: $_id )
+}`

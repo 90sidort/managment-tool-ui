@@ -2,10 +2,11 @@ import React from 'react';
 
 import SkillAdd from "./skill.add.jsx"
 import graphQLFetch from '../../utils/graphqlFetch.js';
-import { loadSkills, updateSkills } from '../../utils/queries/skill.queries.js';
+import { loadSkills, updateSkills, addSkills, deleteSkill } from '../../utils/queries/skill.queries.js';
 import withToast from '../toast.wrapper.jsx';
 import authContext from '../../context/auth.context.js';
 import EditableContainer from '../editable.jsx';
+import { Button } from 'react-bootstrap';
 
 class SkillList extends React.Component {
     static contextType = authContext;
@@ -14,7 +15,7 @@ class SkillList extends React.Component {
       this.state = {
         skills: [],
       };
-      // this.createSkill = this.createSkill.bind(this);
+      this.addSkill = this.addSkill.bind(this);
       this.updateSkill = this.updateSkill.bind(this);
     }
   
@@ -45,19 +46,28 @@ class SkillList extends React.Component {
         showError('Unable to change skill');
       }
     } 
-    
-    // async createSkill(skill) {
-    //   const query = `mutation addNewSkill($skill: SkillInput!) { skillAdd(skill: $skill) {name _id}} `;
-  
-    //   const response = await fetch(window.ENV.UI_API_ENDPOINT, {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ query, variables: { skill } }),
-    //   });
-    //   const result = await response.json();
-  
-    //   this.loadSkills();
-    // }
+
+    async addSkill(skill) {
+      const { showError } = this.props;
+      const { token } = this.context;
+      const query = addSkills;
+      const data = await graphQLFetch(query, skill, showError, token);
+      if (data) this.loadSkills();
+      else showError('Unable to add skill');
+    }
+
+    async deleteSkill(_id) {
+      const { showError } = this.props;
+      const { token } = this.context;
+      const query = deleteSkill;
+      const data = await graphQLFetch(query, { _id }, showError, token);
+      if (data) {
+        if(data.skillDelete === true) this.loadSkills();
+        else showError('Unable to delete - skill is used in job offers.');
+      } else {
+        showError('Unable to delete - server error.');
+      }
+    }
   
     render() {
       return (
@@ -69,10 +79,12 @@ class SkillList extends React.Component {
             {this.state.skills.map((skill) => (
               <li key={skill._id}>
                 <EditableContainer original={skill.name} updateskill={this.updateSkill} id={skill._id}>{skill.name}</EditableContainer>
+                {" "}
+                <Button bsStyle="danger" bsSize="xs" onClick={() => this.deleteSkill(skill._id)}>x</Button>
               </li>
             ))}
           </ul>
-          {/* <SkillAdd createSkill={this.createSkill} /> */}
+          <SkillAdd createSkill={this.addSkill} />
         </div>
       );
     }

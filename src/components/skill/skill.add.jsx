@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button, Col, ControlLabel, Form, FormControl, FormGroup } from 'react-bootstrap';
 
 export default class SkillAdd extends React.Component {
     constructor() {
@@ -9,17 +10,32 @@ export default class SkillAdd extends React.Component {
       e.preventDefault();
       const form = document.forms.skillAdd;
       const skill = {
-        name: form.name.value,
+        skill: {
+          name: form.name.value,
+        }
       };
       this.props.createSkill(skill);
       form.name.value = '';
     }
     render() {
       return (
-        <form name="skillAdd" onSubmit={this.onSkillSubmitHandler}>
-          <input type="text" name="name" placeholder="skill" />
-          <button>Add skill</button>
-        </form>
+        <Form horizontal name="skillAdd" onSubmit={this.onSkillSubmitHandler}>
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={3}>Skill name</Col>
+              <Col sm={6}>
+                <FormControl
+                  componentClass="input"
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Provide skill name"
+                  onChange={this.onCompanySelectedHandler}
+                />
+                <Button type="submit" bsStyle="success">Add skill</Button>
+              </Col>
+            <Col sm={3} />
+          </FormGroup>
+        </Form>
       );
     }
   }

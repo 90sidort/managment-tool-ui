@@ -43,14 +43,8 @@ function NavBar() {
                     <LinkContainer exact to = "/skills">
                       <NavItem>Skills</NavItem>
                     </LinkContainer>
-                    <LinkContainer exact to ="/comps">
+                    <LinkContainer exact to ="/company">
                       <NavItem>Companies</NavItem>
-                    </LinkContainer>
-                    <LinkContainer exact to ="/reps">
-                      <NavItem>Representatives</NavItem>
-                    </LinkContainer>
-                    <LinkContainer exact to ="/locs">
-                      <NavItem>Locations</NavItem>
                     </LinkContainer>
                   </NavDropdown>
                 <LinkContainer exact to="/auth">
@@ -67,17 +61,39 @@ function NavBar() {
 
 function Footer() {
   return (
-    <small>
-      <p className="text-center">
-        Managment tool to cope with jobs, workers, housings and partners. All you need to run a succesfull work agency.
-        {' '}
-      </p>
-      <p className="text-center">
-        <a href="https://github.com/90sidort">
-          Author GitHub repository
-        </a>
-      </p>
-    </small>
+    <div style={{paddingTop: "10px"}}>
+      <div style={{
+        display: "block",
+        padding: "20px",
+        height: "60px",
+        width: "100%"
+      }} /> 
+      <div style={{
+        fontSize: "100%",
+        borderTop: "1px solid #E7E7E7",
+        textAlign: "center",
+        padding: "20px",
+        backgroundColor: "white",
+        paddingBottom: "0px",
+        position: "fixed",
+        left: "0",
+        bottom: "0",
+        height: "5%%",
+        width: "100%"
+      }}>
+        <small>
+          <p className="text-center">
+            Managment tool to cope with jobs, workers, housings and partners. All you need to run a succesfull work agency.
+            {' '}
+          </p>
+          <p className="text-center">
+            <a href="https://github.com/90sidort">
+              Author GitHub repository
+            </a>
+          </p>
+        </small>
+      </div>
+    </div>
   );
 }
 
@@ -112,7 +128,7 @@ export default class Page extends React.Component {
             }}
           >
           <NavBar />
-          <Grid fluid>
+          <Grid fluid style={{paddingBottom: "20%"}}>
             <Contents />
           </Grid>
           <Footer />

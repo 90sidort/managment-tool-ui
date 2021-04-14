@@ -8,10 +8,12 @@ import IssueReport from './job/job.report.jsx';
 import AuthPage from './auth/auth.jsx';
 import AuthContext from '../context/auth.context.js';
 import SkillList from './skill/skill.list.jsx';
+import CompanyList from './company/company.list.jsx'
 
 const NotFound = () => <h1>Page Not Found</h1>;
 
 export default function Contents() {
+  console.log('KURWA', CompanyList);
   return (
     <AuthContext.Consumer>
     {(context) => {
@@ -26,6 +28,7 @@ export default function Contents() {
           {context.token && <Route path="/edit/:id" component={JobEdit} />}
           {context.token && <Route path="/reports" component={IssueReport} />}
           {context.token && <Route path="/skills" component={SkillList} />}
+          {context.token && <Route path="/company" component={CompanyList} />}
           {!context.token && <Redirect to="/auth" exact />}
           <Route component={NotFound} />
       </Switch>

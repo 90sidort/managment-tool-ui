@@ -75,6 +75,8 @@ class SkillList extends React.Component {
           <h2>Skills</h2>
           <small>Double click on skill to enable edit mode</small>
           <hr/>
+            <SkillAdd createSkill={this.addSkill} />
+          <hr/>
           <ul>
             {this.state.skills.map((skill) => (
               <li key={skill._id}>
@@ -84,7 +86,6 @@ class SkillList extends React.Component {
               </li>
             ))}
           </ul>
-          <SkillAdd createSkill={this.addSkill} />
         </div>
       );
     }

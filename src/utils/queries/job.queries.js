@@ -44,7 +44,7 @@ export const jobListQuery = `query getJob(
 
 export const loadComapnyQuery = `
 query getCompanies($_id: ID) {
-  company(_id: $_id) {name _id}
+  company(_id: $_id) {name _id description industry}
 }`;
 
 export const createJobQuery = `

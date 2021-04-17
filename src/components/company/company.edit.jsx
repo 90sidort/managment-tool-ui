@@ -53,7 +53,6 @@ class EditCompany extends React.Component {
         e.preventDefault();
         const { cid, company: {name, description, industry} } = this.state;
         const errors = companyValidator({name, description, industry});
-        console.log(errors);
         if (JSON.stringify(errors) === "{}") this.updateCompanyData(cid, {name, description, industry});
         else this.setState({errors})
     };

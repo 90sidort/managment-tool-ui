@@ -4,7 +4,8 @@ import withToast from '../toast.wrapper.jsx';
 import graphQLFetch from '../../utils/graphqlFetch.js';
 import { loadComapnyQuery } from '../../utils/queries/job.queries.js';
 import authContext from '../../context/auth.context.js';
-import { Button, Col, Grid, ListGroup, ListGroupItem, Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 class CompanyList extends React.Component {
     static contextType = authContext;
@@ -57,9 +58,9 @@ class CompanyList extends React.Component {
                                     <td>{company.name}</td>
                                     <td>{company.description}</td>
                                     <td>{company.industry}</td>
-                                    <td><Button size="lg">Edit</Button></td>
-                                    <td><Button size="lg">Representatives</Button></td>
-                                    <td><Button size="lg">Locations</Button></td>
+                                    <td><LinkContainer to={`/company/${company._id}`}><Button size="lg">Edit</Button></LinkContainer></td>
+                                    <td><LinkContainer to="/"><Button size="lg">Representatives</Button></LinkContainer></td>
+                                    <td><LinkContainer to="/"><Button size="lg">Locations</Button></LinkContainer></td>
                                 </tr>
                             )
                             })}

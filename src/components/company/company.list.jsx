@@ -30,12 +30,15 @@ class CompanyList extends React.Component {
     }
 
     async deleteCompany(id) {
-        const { showError } = this.props
+        const { showError, showSuccess } = this.props
         const { token } = this.context
         const query = deleteCompanyQuery;
         const data = await graphQLFetch(query, { _id: id }, showError, token);
         if (data) {
-            if(data.companyDelete === true) this.loadCompany();
+            if(data.companyDelete === true) {
+                showSuccess('Company deleted.');
+                this.loadCompany();
+            }
             else showError('Unable to delete - company is used in job offers.');
         } else {
             showError('Unable to delete company')
@@ -55,11 +58,12 @@ class CompanyList extends React.Component {
     }
 
     async createCompany(company) {
-        const { showError } = this.props
+        const { showError, showSuccess  } = this.props
         const { token } = this.context
         const query = createCompanyQuery;
         const data = await graphQLFetch(query, { company }, showError, token);
         if (data) {
+            showSuccess('Company created.')
             this.loadCompany()
         } else {
             showError('Unable to load data')
@@ -72,7 +76,7 @@ class CompanyList extends React.Component {
             <div>
                 <Panel>
                     <Panel.Heading>
-                        <Panel.Title toggle>Provide company data</Panel.Title>
+                        <Panel.Title toggle>Create new company</Panel.Title>
                     </Panel.Heading>
                     <Panel.Body collapsible>
                         <CompanyAdd createCompany={this.createCompany}/>
@@ -94,7 +98,6 @@ class CompanyList extends React.Component {
                         </thead>
                         <tbody>
                             {companies && companies.map((company, i) => {
-                            console.log(company);
                             return (
                                 <tr key={company._id}>
                                     <td>{i}</td>
@@ -103,7 +106,7 @@ class CompanyList extends React.Component {
                                     <td>{company.industry}</td>
                                     <td><LinkContainer to={`/company/${company._id}`}><Button size="lg">Edit</Button></LinkContainer></td>
                                     <td><LinkContainer to={`/company`}><Button size="lg" onClick={(e) => this.onDeleteHandler(e, company._id)}>Delete</Button></LinkContainer></td>
-                                    <td><LinkContainer to="/"><Button size="lg">Representatives</Button></LinkContainer></td>
+                                    <td><LinkContainer to={`/representatives/${company._id}`}><Button size="lg">Representatives</Button></LinkContainer></td>
                                     <td><LinkContainer to="/"><Button size="lg">Locations</Button></LinkContainer></td>
                                 </tr>
                             )

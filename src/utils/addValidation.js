@@ -15,8 +15,6 @@ export default function(job) {
         end
     } = job
 
-    console.log();
-
     if (company.length !== 24) error.company = "Invalid company!"
     if (location.length !== 24) error.location = "Invalid location!"
     if (representative.length !== 24) error.representative = "Invalid representative!"
@@ -27,6 +25,5 @@ export default function(job) {
     if (rate < 8 || rate > 500 || !rate) error.rate = "Rate cannot be smaller than 8 and greater than 500!"
     if (!start instanceof Date || isNaN(start)) error.start = "Invalid value for start!"
     if (!end instanceof Date || isNaN(end)) error.end = "Invalid value for end!"
-    console.log(error);
     return error
 }

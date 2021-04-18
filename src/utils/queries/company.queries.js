@@ -18,3 +18,21 @@ export const createCompanyQuery = `
         companyAdd(company: $company) {name description industry _id}
     }
 `
+
+export const createRepQuery = `
+    mutation createRep($representative: RepresentativeInput! ){
+        repAdd(representative: $representative) {
+            _id
+            cid
+            name
+            phone
+            email
+        }
+    }
+`
+
+export const deleteRepQuery = `
+    mutation deleteRep($_id: ID!) {
+        representativeDelete(_id: $_id)
+    }
+`

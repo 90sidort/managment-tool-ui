@@ -137,7 +137,6 @@ class JobList extends React.Component {
       const { showError, showSuccess } = this.props
       const { token } = this.context
       const query = deleteJobQuery;
-      console.log('z joba', _id);
 
       const data = await graphQLFetch(query, { _id }, showError, token);
       if (data) {
@@ -151,7 +150,6 @@ class JobList extends React.Component {
   
     render() {
       const { companies, jobs, pages, currentPage, records, showing } = this.state
-      console.log(111, this.context.token);
       return (
         <React.Fragment>
           <Panel>

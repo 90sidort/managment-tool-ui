@@ -3,7 +3,6 @@ import { Button, Modal } from 'react-bootstrap'
 
 export default function(props) {
   const {confirm, showHide, text} = props
-  console.log('moje propsy', props);
   return (
     <React.Fragment>
       <Modal.Header>

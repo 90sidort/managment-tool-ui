@@ -54,7 +54,6 @@ class JobPanel extends React.Component {
     }
 
   render(){
-    console.log(this.props);
     const { previous : { search } } = this.props
     const data = this.state.job
     const showTooltip = function(text) {

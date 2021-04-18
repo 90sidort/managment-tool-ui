@@ -39,7 +39,6 @@ class AuthPage extends React.Component {
     const query = loginQuery;
     const data = await graphQLFetch(query, {email, password}, showError);
     if (data) {
-      console.log(data.login.token);
       if (data.login.token) {
         this.context.login(
           data.login.token,
@@ -90,7 +89,6 @@ class AuthPage extends React.Component {
   }
 
   render() {
-    console.log(111, this.props);
     const {email, password, isLogin, name, surname, phone, position} = this.state;
     return (
       <div>

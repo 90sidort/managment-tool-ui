@@ -10,7 +10,6 @@ function NavBar() {
   return (
     <AuthContext.Consumer>
       {(context) => {
-        console.log(context);
         return (
           <Navbar fluid expand="lg">
             <Navbar.Brand>Job Tracker</Navbar.Brand>

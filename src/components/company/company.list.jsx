@@ -107,7 +107,7 @@ class CompanyList extends React.Component {
                                     <td><LinkContainer to={`/company/${company._id}`}><Button size="lg">Edit</Button></LinkContainer></td>
                                     <td><LinkContainer to={`/company`}><Button size="lg" onClick={(e) => this.onDeleteHandler(e, company._id)}>Delete</Button></LinkContainer></td>
                                     <td><LinkContainer to={`/representatives/${company._id}`}><Button size="lg">Representatives</Button></LinkContainer></td>
-                                    <td><LinkContainer to="/"><Button size="lg">Locations</Button></LinkContainer></td>
+                                    <td><LinkContainer to={`/locations/${company._id}`}><Button size="lg">Locations</Button></LinkContainer></td>
                                 </tr>
                             )
                             })}

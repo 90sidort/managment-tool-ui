@@ -44,3 +44,16 @@ export const updateRepQuery = `
         }
     }
 `
+
+export const createLocQuery = `
+    mutation createLocation($location: LocationInput!) {
+        locationAdd(location: $location) {
+            cid
+            _id
+            city
+            address
+            country
+            postcode
+        }
+    }
+`

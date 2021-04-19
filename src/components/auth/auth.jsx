@@ -69,8 +69,6 @@ class AuthPage extends React.Component {
         phone: "",
         position: ""
       })
-    } else {
-      showError("Something went wrong. Check connection and try again.")
     }
   }
 

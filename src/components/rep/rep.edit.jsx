@@ -68,7 +68,6 @@ class RepEdit extends React.Component {
     }
 
     async updateRepData(repId, repData) {
-        console.log(repId, repData);
         const { showError, history } = this.props
         const { token } = this.context
         const query = updateRepQuery;

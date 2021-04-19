@@ -57,3 +57,22 @@ export const createLocQuery = `
         }
     }
 `
+
+export const deleteLocQuery = `
+    mutation deleteLocation ($_id: ID!) {
+        locationDelete(_id: $_id)
+    }
+`
+
+export const updateLocQuery = `
+    mutation updateLocation($_id: ID!, $location: LocationInput!) {
+        locationUpdate(_id: $_id, location: $location) {
+            country
+            address
+            postcode
+            cid
+            city
+            _id
+        }
+    }
+`

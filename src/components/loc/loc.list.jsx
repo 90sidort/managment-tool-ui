@@ -7,7 +7,7 @@ import LocationAdd from './loc.add.jsx';
 import graphQLFetch from '../../utils/graphqlFetch.js';
 import authContext from '../../context/auth.context.js';
 import { loadLoc } from '../../utils/queries/job.queries';
-import { createLocQuery } from '../../utils/queries/company.queries.js';
+import { createLocQuery, deleteLocQuery } from '../../utils/queries/company.queries.js';
 
 class LocList extends React.Component {
     static contextType = authContext;
@@ -25,27 +25,27 @@ class LocList extends React.Component {
         this.loadLocs(cid)
     }
 
-    // onDeleteHandler(e, id){
-    //     e.preventDefault();
-    //     this.deleteRep(id);
-    // }
+    onDeleteHandler(e, id){
+        e.preventDefault();
+        this.deleteRep(id);
+    }
 
-    // async deleteRep(id){
-    //     const { cid } = this.state;
-    //     const { showError, showSuccess  } = this.props;
-    //     const { token } = this.context;
-    //     const query = deleteRepQuery;
-    //     const data = await graphQLFetch(query, { _id: id }, showError, token);
-    //     if(data){
-    //         if(data.representativeDelete === true) {
-    //             showSuccess('Representative deleted.');
-    //             this.loadReps(cid)
-    //         }
-    //         else showError('Unable to delete - representative is used in job offers.');
-    //     } else {
-    //         showError('Unable to delete representative');
-    //     }
-    // }
+    async deleteRep(id){
+        const { cid } = this.state;
+        const { showError, showSuccess  } = this.props;
+        const { token } = this.context;
+        const query = deleteLocQuery;
+        const data = await graphQLFetch(query, { _id: id }, showError, token);
+        if(data){
+            if(data.locationDelete === true) {
+                showSuccess('Location deleted.');
+                this.loadLocs(cid)
+            }
+            else showError('Unable to delete - location is used in job offers.');
+        } else {
+            showError('Unable to delete location');
+        }
+    }
 
     async createLocation(location){
         const { cid } = this.state;
@@ -67,7 +67,6 @@ class LocList extends React.Component {
         const query = loadLoc;
         const data = await graphQLFetch(query, { cid }, showError, token);
         if (data) {
-            console.log(data);
             this.setState({ locs: data.location });
         } else {
             showError('Unable to load data.')
@@ -76,7 +75,6 @@ class LocList extends React.Component {
 
     render() {
         const { locs, cid } = this.state
-        console.log(locs);
         return (
             <div>
                 <Panel>

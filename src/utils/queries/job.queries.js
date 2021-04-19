@@ -69,14 +69,14 @@ query getRep($cid: ID, $_id: ID) {
 }
 `
 
-export const loadLoc = `query getLocations($cid: ID) {
-  location(cid: $cid) {
-    _id
+export const loadLoc = `query getLocations($cid: ID, $_id: ID) {
+  location(cid: $cid, _id: $_id) {
     cid
     city
     country
     address
     postcode
+    _id
   }
 }`;
 

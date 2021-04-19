@@ -13,6 +13,7 @@ import EditCompanyWithToast from './company/company.edit.jsx';
 import RepList from './rep/rep.list.jsx';
 import RepEdit from './rep/rep.edit.jsx';
 import LocList from './loc/loc.list.jsx';
+import LocEdit from './loc/loc.edit.jsx';
 
 const NotFound = () => <h1>Page Not Found</h1>;
 
@@ -35,6 +36,7 @@ export default function Contents() {
           {context.token && <Route path="/company/:id" component={EditCompanyWithToast} />}
           {context.token && <Route path="/company" component={CompanyList} />}
           {context.token && <Route path="/locations/:cid" component={LocList} />}
+          {context.token && <Route path="/location/:id/:cid" component={LocEdit} />}
           {!context.token && <Redirect to="/auth" exact />}
           <Route component={NotFound} />
       </Switch>

@@ -36,3 +36,11 @@ export const deleteRepQuery = `
         representativeDelete(_id: $_id)
     }
 `
+
+export const updateRepQuery = `
+    mutation repUpdate ($_id: ID!, $representative: RepresentativeInput!) {
+        representativeUpdate(_id: $_id, representative: $representative) {
+            _id
+        }
+    }
+`

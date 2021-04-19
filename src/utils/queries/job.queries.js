@@ -57,15 +57,17 @@ mutation deleteJob($_id: ID!) {
   jobDelete(_id: $_id)
 }`;
 
-export const loadReps = `query getRep($cid: ID) {
-  representative(cid: $cid) {
-    _id
+export const loadReps = `
+query getRep($cid: ID, $_id: ID) {
+  representative(cid: $cid, _id: $_id) {
     cid
+    _id
     email
     phone
     name
   }
-}`
+}
+`
 
 export const loadLoc = `query getLocations($cid: ID) {
   location(cid: $cid) {

@@ -1,7 +1,9 @@
 import React from 'react';
-import { Alert, Button, Col, ControlLabel, Form, FormControl, FormGroup } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
-import companyValidator from '../../utils/validators/company.validator.js'
+import companyValidator from '../../utils/validators/company.validator.js';
+import InputForm from '../shared/inputs.shared.jsx';
+import ButtonForm from '../shared/buttons.shared.jsx';
 
 export default class CompanyAdd extends React.Component {
     constructor() {
@@ -10,6 +12,7 @@ export default class CompanyAdd extends React.Component {
         errors: {}
       }
       this.onCompanySubmitHandler = this.onCompanySubmitHandler.bind(this);
+      this.dismissValidation = this.dismissValidation.bind(this);
     }
 
     onCompanySubmitHandler(e) {
@@ -39,59 +42,37 @@ export default class CompanyAdd extends React.Component {
       const { errors } = this.state;
       return (
         <Form horizontal name="companyAdd" onSubmit={this.onCompanySubmitHandler}>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Name</Col>
-              <Col sm={6}>
-                <FormControl
-                  componentClass="input"
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Provide company name"
-                />
-                {errors.name && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("name")}>{errors.name}</Alert>}
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Industry</Col>
-              <Col sm={6}>
-                <FormControl
-                  componentClass="select"
-                  name="industry"
-                  id="industry"
-                  defaultValue={-1}
-                >
-                  <option key={-1} value={-1} disabled>Select company</option>
-                  <option value="Services">Services</option>
-                  <option value="Agriculture">Agriculture</option>
-                  <option value="Manufacturing">Manufacturing</option>
-                </FormControl>
-                {errors.industry && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("industry")}>{errors.industry}</Alert>}
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Description</Col>
-              <Col sm={6}>
-                <FormControl
-                  componentClass="input"
-                  type="text"
-                  name="description"
-                  id="description"
-                  placeholder="Provide company description"
-                />
-                {errors.description && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("description")}>{errors.description}</Alert>}
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
-          <FormGroup>
-            <Col sm={3} />
-              <Col sm={6}>
-                  <Button type="submit" bsStyle="success">Add company</Button>
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
+          <InputForm
+            typeElement={"text"}
+            nameElement={"name"}
+            idElement={"name"}
+            placeholderElement={"Provide company name"}
+            errorsElement={errors}
+            dismissHandler= {this.dismissValidation}
+          />
+          <InputForm
+            typeElement={"select"}
+            nameElement={"industry"}
+            idElement={"industry"}
+            placeholderElement={"Select industry"}
+            defaultValue={-1}
+            errorsElement={errors}
+            dismissHandler= {this.dismissValidation}
+            optionsElement={['Services', 'Agriculture', 'Manufacturing']}
+          />
+          <InputForm
+            typeElement={"text"}
+            nameElement={"description"}
+            idElement={"description"}
+            placeholderElement={"Provide company description"}
+            errorsElement={errors}
+            dismissHandler= {this.dismissValidation}
+          />
+          <ButtonForm
+            textButton={'Add company'}
+            styleButton={'success'}
+            type={'submit'}
+          />
         </Form>
       );
     }

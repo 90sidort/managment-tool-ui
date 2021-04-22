@@ -1,7 +1,9 @@
 import React from 'react';
-import { Alert, Button, Col, ControlLabel, Form, FormControl, FormGroup } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 import locValidator from '../../utils/validators/loc.validator.js'
+import InputForm from '../shared/inputs.shared.jsx';
+import ButtonForm from '../shared/buttons.shared.jsx';
 
 export default class LocAdd extends React.Component {
     constructor() {
@@ -10,6 +12,7 @@ export default class LocAdd extends React.Component {
         errors: {}
       }
       this.onLocSubmitHandler = this.onLocSubmitHandler.bind(this);
+      this.dismissValidation = this.dismissValidation.bind(this);
     }
 
     onLocSubmitHandler(e) {
@@ -42,69 +45,43 @@ export default class LocAdd extends React.Component {
       const { errors } = this.state;
       return (
         <Form horizontal name="locAdd" onSubmit={this.onLocSubmitHandler}>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Address</Col>
-              <Col sm={6}>
-                <FormControl
-                  componentClass="input"
-                  type="text"
-                  name="address"
-                  id="address"
-                  placeholder="Provide address"
-                />
-                {errors.address && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("address")}>{errors.address}</Alert>}
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Postcode</Col>
-              <Col sm={6}>
-                <FormControl
-                  componentClass="input"
-                  type="text"
-                  name="postcode"
-                  id="postcode"
-                  placeholder="Provide postcode"
-                />
-                {errors.postcode && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("postcode")}>{errors.postcode}</Alert>}
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>City</Col>
-              <Col sm={6}>
-                <FormControl
-                  componentClass="input"
-                  type="text"
-                  name="city"
-                  id="city"
-                  placeholder="Provide city"
-                />
-                {errors.city && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("city")}>{errors.city}</Alert>}
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Country</Col>
-              <Col sm={6}>
-                <FormControl
-                  componentClass="input"
-                  type="text"
-                  name="country"
-                  id="country"
-                  placeholder="Provide country"
-                />
-                {errors.country && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("country")}>{errors.country}</Alert>}
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
-          <FormGroup>
-            <Col sm={3} />
-              <Col sm={6}>
-                  <Button type="submit" bsStyle="success">Add location</Button>
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
+          <InputForm
+            typeElement={"text"}
+            nameElement={"address"}
+            idElement={"address"}
+            placeholderElement={"Provide address"}
+            errorsElement={errors}
+            dismissHandler= {this.dismissValidation}
+          />
+          <InputForm
+            typeElement={"text"}
+            nameElement={"postcode"}
+            idElement={"postcode"}
+            placeholderElement={"Provide postcode"}
+            errorsElement={errors}
+            dismissHandler= {this.dismissValidation}
+          />
+          <InputForm
+            typeElement={"text"}
+            nameElement={"city"}
+            idElement={"city"}
+            placeholderElement={"Provide city"}
+            errorsElement={errors}
+            dismissHandler= {this.dismissValidation}
+          />
+          <InputForm
+            typeElement={"text"}
+            nameElement={"country"}
+            idElement={"country"}
+            placeholderElement={"Provide country"}
+            errorsElement={errors}
+            dismissHandler= {this.dismissValidation}
+          />
+          <ButtonForm
+            textButton={'Add location'}
+            styleButton={'success'}
+            type={'submit'}
+          />
         </Form>
       );
     }

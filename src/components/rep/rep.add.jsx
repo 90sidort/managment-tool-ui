@@ -1,7 +1,9 @@
 import React from 'react';
-import { Alert, Button, Col, ControlLabel, Form, FormControl, FormGroup } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 import repValidator from '../../utils/validators/rep.validator.js';
+import InputForm from '../shared/inputs.shared.jsx';
+import ButtonForm from '../shared/buttons.shared.jsx';
 
 export default class CompanyAdd extends React.Component {
     constructor() {
@@ -10,6 +12,7 @@ export default class CompanyAdd extends React.Component {
         errors: {}
       }
       this.onRepSubmitHandler = this.onRepSubmitHandler.bind(this);
+      this.dismissValidation = this.dismissValidation.bind(this);
     }
 
     onRepSubmitHandler(e) {
@@ -43,55 +46,35 @@ export default class CompanyAdd extends React.Component {
       const { errors } = this.state;
       return (
         <Form horizontal name="addRep" onSubmit={this.onRepSubmitHandler}>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Name</Col>
-              <Col sm={6}>
-                <FormControl
-                  componentClass="input"
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Provide representative name"
-                />
-                {errors.name && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("name")}>{errors.name}</Alert>}
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Email</Col>
-              <Col sm={6}>
-                <FormControl
-                    componentClass="input"
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="Provide representative email"
-                    />
-                    {errors.email && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("email")}>{errors.email}</Alert>}
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
-          <FormGroup>
-            <Col componentClass={ControlLabel} sm={3}>Phone</Col>
-              <Col sm={6}>
-                <FormControl
-                  componentClass="input"
-                  type="text"
-                  name="phone"
-                  id="phone"
-                  placeholder="Provide representative phone"
-                />
-                {errors.phone && <Alert bsStyle="danger" onDismiss={() => this.dismissValidation("phone")}>{errors.phone}</Alert>}
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
-          <FormGroup>
-            <Col sm={3} />
-              <Col sm={6}>
-                  <Button type="submit" bsStyle="success">Add representative</Button>
-              </Col>
-            <Col sm={3} />
-          </FormGroup>
+          <InputForm
+            typeElement={"text"}
+            nameElement={"name"}
+            idElement={"name"}
+            placeholderElement={"Provide representative name"}
+            errorsElement={errors}
+            dismissHandler= {this.dismissValidation}
+          />
+          <InputForm
+            typeElement={"text"}
+            nameElement={"email"}
+            idElement={"email"}
+            placeholderElement={"Provide representative email"}
+            errorsElement={errors}
+            dismissHandler= {this.dismissValidation}
+          />
+          <InputForm
+            typeElement={"text"}
+            nameElement={"phone"}
+            idElement={"phone"}
+            placeholderElement={"Provide representative phone"}
+            errorsElement={errors}
+            dismissHandler= {this.dismissValidation}
+          />
+          <ButtonForm
+            textButton={'Add representative'}
+            styleButton={'success'}
+            type={'submit'}
+          />
         </Form>
       );
     }

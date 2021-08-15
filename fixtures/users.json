@@ -1,0 +1,123 @@
+[
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dc0"
+    },
+    "name": "Admin",
+    "surname": "Adminowicz",
+    "phone": "+970 563 115 1215",
+    "position": "Environmental Tech",
+    "email": "admin@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  },
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dc5"
+    },
+    "name": "Fons",
+    "surname": "Vereker",
+    "phone": "+970 563 115 1215",
+    "position": "Environmental Tech",
+    "email": "fvereker0@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  },
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dc6"
+    },
+    "name": "Itch",
+    "surname": "Croote",
+    "phone": "+33 191 532 4032",
+    "position": "Desktop Support Technician",
+    "email": "icroote1@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  },
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dc7"
+    },
+    "name": "Alyosha",
+    "surname": "Dike",
+    "phone": "+385 735 385 6563",
+    "position": "Sales Associate",
+    "email": "adike2@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  },
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dc8"
+    },
+    "name": "Vilma",
+    "surname": "Honack",
+    "phone": "+351 314 138 3480",
+    "position": "Safety Technician I",
+    "email": "vhonack3@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  },
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dc9"
+    },
+    "name": "Everard",
+    "surname": "Menauteau",
+    "phone": "+63 764 525 5320",
+    "position": "Operator",
+    "email": "emenauteau4@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  },
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dca"
+    },
+    "name": "Tawnya",
+    "surname": "Snashall",
+    "phone": "+381 304 154 5366",
+    "position": "Business Systems Development Analyst",
+    "email": "tsnashall5@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  },
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dcb"
+    },
+    "name": "Jard",
+    "surname": "Zamboniari",
+    "phone": "+7 504 317 7925",
+    "position": "Chemical Engineer",
+    "email": "jzamboniari6@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  },
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dcc"
+    },
+    "name": "Flossie",
+    "surname": "Tincknell",
+    "phone": "+86 899 891 3388",
+    "position": "Geological Engineer",
+    "email": "ftincknell7@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  },
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dcd"
+    },
+    "name": "Courtney",
+    "surname": "Robyns",
+    "phone": "+7 151 481 1188",
+    "position": "Automation Specialist III",
+    "email": "crobyns8@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  },
+  {
+    "_id": {
+      "$oid": "611945e4fc13ae032f000dce"
+    },
+    "name": "Ruthie",
+    "surname": "Champagne",
+    "phone": "+30 744 221 7378",
+    "position": "Teacher",
+    "email": "rchampagne9@test.com",
+    "password": "$2b$12$qdPbaTzyC/736AlmiuK3SOcpq2.S3646pt7XSuPuyENpz8fLiozvO"
+  }
+]
